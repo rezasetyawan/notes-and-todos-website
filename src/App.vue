@@ -1,12 +1,7 @@
 <script setup lang="ts">
-import TheHeader from './components/TheHeader.vue'
+// import Home from './components/Home.vue'
 </script>
 
 <template>
- <main class="font-open-sans">
-  <TheHeader />
- </main>
+ <RouterView />
 </template>
-
-<style scoped>
-</style>
