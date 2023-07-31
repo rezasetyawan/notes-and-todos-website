@@ -7,7 +7,7 @@ import { AddNote } from "../../global/types";
 const { showNoteForm, noteData } = defineProps(["showNoteForm", "noteData"]);
 const emit = defineEmits(["updateShowNoteForm", "firstInput"]);
 
-const inputRef = ref<HTMLInputElement | null>(null);
+const textAreaRef = ref<HTMLTextAreaElement | null>(null);
 
 const toggleNoteForm = () => {
   emit("updateShowNoteForm", !showNoteForm);
@@ -40,9 +40,17 @@ const onSubmitHandler = async () => {
   toggleNoteForm();
 };
 
+const resizeTextArea = () => {
+  const textarea = textAreaRef.value;
+  if (textarea) {
+    textarea.style.height = "auto";
+    textarea.style.height = `${textarea.scrollHeight}px`;
+  }
+};
+
 onMounted(() => {
   if (showNoteForm) {
-    inputRef.value?.focus();
+    textAreaRef.value?.focus();
   }
 });
 </script>
@@ -50,21 +58,22 @@ onMounted(() => {
 <template>
   <section class="flex justify-center items-center my-5">
     <form
-      class="bg-white p-5 w-[576px] shadow-lg"
+      class="bg-white p-5 w-[576px] h-full rounded-lg shadow-lg font-open-sans"
       @submit.prevent="onSubmitHandler"
     >
       <input
         v-model="noteData.title"
-        class="block w-full border-[1px] my-2 p-2"
+        class="block w-full text-lg focus:outline-none p-1 my-2 text-slate-600 placeholder:text-slate-600"
         placeholder="Title"
       />
       <textarea
         v-model="noteData.text"
-        class="block w-full resize-y min-h-[50px] border-[1px] my-2 p-2"
-        placeholder="Note"
-        ref="inputRef"
+        class="block w-full focus:outline-none p-1 my-2 text-slate-600 placeholder:text-slate-600"
+        placeholder="Write your note here"
+        ref="textAreaRef"
+        @input="resizeTextArea"
       ></textarea>
-      <button type="submit" class="px-2 py-1 bg-slate-100">Close</button>
+      <button type="submit" class="px-2 py-1 font-semibold float-right">Close</button>
     </form>
   </section>
 </template>

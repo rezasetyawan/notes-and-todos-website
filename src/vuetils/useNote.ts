@@ -3,7 +3,7 @@ import { AddNote, UpdateNote, GetNote } from "../../global/types";
 
 const addNote = async (note: AddNote) => {
     try {
-        const { data, error } = await supabase.from('notes').insert([note]).select()
+        const { data, error } = await supabase.from('notes').insert([note]).select('id')
         if (error) {
             console.error(error.message);
             throw new Error(error.message);
@@ -60,6 +60,7 @@ const updateNoteById = async (note: UpdateNote, noteId: string) => {
         const { data, error } = await supabase.from('notes').update(note).eq('id', noteId)
         if (error) {
             console.error(error.message)
+            throw new Error(error.message)
         }
         return data
     } catch (error: any) {

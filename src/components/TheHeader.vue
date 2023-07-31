@@ -11,13 +11,17 @@ const onInputKeywordHandler = () => {
 };
 </script>
 <template>
-  <header class="grid grid-cols-3 justify-items-center p-5">
-    <h1 class="text-lg justify-self-start">Keep</h1>
-    <input
-      v-model="localSearchKey"
-      class="focus:outline-none p-2 w-full bg-accent-color1"
-      placeholder="Search your notes"
-      @input="onInputKeywordHandler"
-    />
+  <header class="bg-white shadow-lg sticky top-0 z-[100]">
+    <section class="grid grid-cols-3 justify-items-center p-5">
+     
+      <h1 class="text-2xl font-semibold justify-self-start text-slate-600">Keep</h1>
+    
+      <input
+        v-model="localSearchKey"
+        class="focus:outline-none p-2 w-full bg-accent-color1 rounded-lg"
+        placeholder="Search your notes"
+        @input="onInputKeywordHandler"
+      />
+    </section>
   </header>
 </template>

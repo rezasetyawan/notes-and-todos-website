@@ -1,35 +1,32 @@
 <script setup lang="ts">
+import { useRouter } from "vue-router";
+
 const { note } = defineProps(["note"]);
 
-const emit = defineEmits(["openNoteDetail"]);
+const emit = defineEmits(["openModal"]);
 
-const openNoteDetailModal = () => {
-  emit("openNoteDetail", true);
+const router = useRouter();
+
+const openModal = () => {
+  emit("openModal"); // dari emit ("openModal", true)
+};
+
+const redirectToDetail = (name: string, id: string) => {
+  router.push(`${name}/${id}`);
 };
 </script>
-<template>
-  <router-link :to="'/note/' + note.id">
-    <div
-      class="p-3 border-2 border-slate-600 rounded-lg break-inside-avoid"
-      @click="openNoteDetailModal"
-    >
-      <h3 class="text-lg font-semibold">{{ note.title }}</h3>
-      <p>{{ note.text }}</p>
-    </div>
-  </router-link>
-</template>
 
-<!-- <template>
-    <router-link :to="'/note/' + note.id">
-      <div class="p-3 border-2 border-slate-600 rounded-lg break-inside-avoid">
-        <h3 class="text-lg font-semibold">{{ note.title }}</h3>
-        <p>{{ note.text }}</p>
-      </div>
-    </router-link>
-  </template>
-  
-  <script setup lang="ts">
-  
-  const { note } = defineProps(['note']);
-  </script>
-   -->
+<template>
+  <div
+    class="p-3 border-2 border-slate-600 rounded-lg break-inside-avoid"
+    @click="
+      () => {
+        redirectToDetail('note', note.id);
+        openModal();
+      }
+    "
+  >
+    <h3 class="text-lg font-semibold">{{ note.title }}</h3>
+    <p>{{ note.text }}</p>
+  </div>
+</template>
