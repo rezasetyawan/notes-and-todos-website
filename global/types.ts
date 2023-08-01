@@ -42,6 +42,7 @@ interface UpdateTodo {
 interface GetTodo {
     id:string,
     title?:string,
+    created_at?:string,
     updated_at:string,
     todo_items: GetTodoItem[]
 }
@@ -62,7 +63,7 @@ interface GetTodoItem {
     id: string,
     text: string,
     isActive: boolean,
-    
+    todo_id:string
 }
 
 export type { AddNote, UpdateNote, GetNote, TodoData,AddTodo,  UpdateTodo, GetTodo, AddTodoItem, UpdateTodoItem, GetTodoItem}

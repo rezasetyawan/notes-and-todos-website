@@ -96,7 +96,7 @@ const getTodoById = async (todoId: string): Promise<GetTodo | null> => {
     }
 }
 
-const updateTodoById = async (todo: UpdateTodo, todoId: string) => {
+const updateTodoById = async ( todoId: string, todo: UpdateTodo) => {
     try {
         const { data, error } = await supabase.from('todos').update(todo).eq('id', todoId)
 
@@ -111,7 +111,7 @@ const updateTodoById = async (todo: UpdateTodo, todoId: string) => {
     }
 }
 
-const deleteTodoByid = async (todoId: string) => {
+const deleteTodoById = async (todoId: string) => {
     try {
         const { error } = await supabase.from('todos').delete().eq('id', todoId)
 
@@ -126,4 +126,4 @@ const deleteTodoByid = async (todoId: string) => {
     }
 }
 
-export { addTodo, getTodos, getTodoById, updateTodoById, deleteTodoByid }
+export { addTodo, getTodos, getTodoById, updateTodoById, deleteTodoById }

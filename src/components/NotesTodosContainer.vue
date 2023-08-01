@@ -77,23 +77,23 @@ watch(showModal, (to) => {
         ></TodoContainer>
       </div>
     </article>
-
-    <!-- <NoteDetail
+<!-- 
+    <NoteDetail
       :showModal="showModal"
       @closeNoteDetail="showModal = false"
     ></NoteDetail> -->
 
     <TodoDetail :showModal="showModal" @closeTodoDetail="showModal = false" />
 
-      <!-- <h3
-        v-if="!filteredNotes.length && notes.length > 0"
-        class="text-lg text-center my-5"
-      >
-        Not Found
-      </h3>
+    <!-- <h3
+      v-if="!filteredNotes.length && notes.length > 0"
+      class="text-lg text-center my-5"
+    >
+      Not Found
+    </h3>
 
-      <h3 v-if="!notes.length" class="text-lg text-center my-5">
-        You dont have any notes
-      </h3> -->
+    <h3 v-if="!notes.length" class="text-lg text-center my-5">
+      You dont have any notes
+    </h3> -->
   </section>
 </template>

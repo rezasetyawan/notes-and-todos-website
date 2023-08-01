@@ -75,8 +75,8 @@ const isChecked = (index: number) => {
 };
 
 const handleCheckboxToggle = (index: number) => {
-  todoData.value.todo_items[index].isActive = !todoData.value.todo_items[index]
-    .isActive;
+  todoData.value.todo_items[index].isActive =
+    !todoData.value.todo_items[index].isActive;
 };
 const filteredTodoItems = computed(() => {
   return todoData.value.todo_items.filter((todo) => {
@@ -95,7 +95,6 @@ const onSubmitHandler = async () => {
       });
 
       await addTodoItem(filteredTodoItems.value);
-      
     } catch (error) {
       console.error(
         "failed to add todo or todo item, here is the error:",
@@ -103,7 +102,7 @@ const onSubmitHandler = async () => {
       );
     }
   }
-  toggleTodoForm()
+  toggleTodoForm();
 };
 
 onMounted(() => {

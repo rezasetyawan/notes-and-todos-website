@@ -108,51 +108,6 @@ const resizeTextArea = () => {
 };
 </script>
 <template>
-  <!-- <section
-    v-if="note && showModal"
-    class="fixed top-[50%] left-[50%] -translate-y-1/2 -translate-x-1/2 bg-white"
-  >
-    <div class="relative p-3 border-2 border-slate-600 rounded-lg w-[448px]">
-      <div class="absolute top-1 right-1">
-        <button
-          class="px-2 py-1 bg-slate-200 rounded-md"
-          @click="
-            () => {
-              deleteNoteHandler(noteId);
-            }
-          "
-        >
-          delete
-        </button>
-      </div>
-      <input
-        class="text-lg font-semibold block focus:outline-none"
-        v-model="currentNoteData.title"
-      />
-      <textarea
-        class="my-5 block focus:outline-none w-full h-full"
-        v-model="currentNoteData.text"
-        ref="textAreaRef"
-        @input="resizeTextArea"
-      ></textarea>
-      <p class="float-right text-sm font-medium">
-        updated at:
-        {{ formatTimestampWithTimeZone(note.updated_at, "Asia/Jakarta") }}
-      </p>
-      <button
-        class="px-2 py-1 bg-slate-100 rounded-lg"
-        @click="
-          () => {
-            closeButtonHandler(noteId);
-          }
-        "
-      >
-        close
-      </button>
-    </div>
-    <div v-if="!note">Loading...</div>
-  </section> -->
-
   <section v-if="note">
     <div
       tabindex="-1"
