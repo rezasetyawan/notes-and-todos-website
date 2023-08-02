@@ -57,7 +57,6 @@ watch(showModal, (to) => {
 }, {immediate: true});
 </script>
 
-// v-else-if="filteredNotes.length"
 <template>
   <section class="relative">
     <h3 v-if="loading" class="text-center my-5">Loading...</h3>

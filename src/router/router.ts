@@ -1,6 +1,8 @@
 import Home from '../components/Home.vue'
 import NoteDetail from '../components/NoteDetail.vue'
 import TodoDetail from '../components/TodoDetail.vue'
+import SignUp from '../components/SignUp.vue'
+import SignIn from '../components/SignIn.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -18,6 +20,16 @@ const router = createRouter({
                 }
             ]
         },
+        {
+            path: '/auth/signup',
+            name: 'signup page',
+            component: SignUp
+        },
+        {
+            path: '/auth/signin',
+            name: 'signin page',
+            component: SignIn
+        }
         // { path: '/note/:id', name: 'note detail', component: NoteDetail },
         // {
         //     path: '/todo/:id', name: 'todo detail', component: TodoDetail

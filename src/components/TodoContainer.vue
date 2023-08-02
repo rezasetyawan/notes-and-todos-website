@@ -2,7 +2,6 @@
 import { useRouter } from "vue-router";
 import { updateTodoItemById } from "../vuetils/useTodoItem";
 
-
 const { todo } = defineProps(["todo"]);
 const emit = defineEmits(["openModal"]);
 
@@ -16,7 +15,7 @@ const onChangeTodoStatusHandler = async (
   todoItemId: string,
   todoItemStatus: boolean
 ) => {
-  console.log('clicked')
+  console.log("clicked");
   await updateTodoItemById(todoItemId, {
     is_complete: !todoItemStatus,
   })
@@ -45,23 +44,35 @@ const redirectToDetail = (name: string, id: string) => {
     >
       {{ todo.title }}
     </h3>
-    <div v-for="(todoItem, index) in todo.todo_items" :key="index">
-      <div v-if="!todoItem.is_complete" class="my-2">
-        <input
-          type="checkbox"
-          v-model="todoItem.is_complete"
-          class="mr-2"
-          @click="onChangeTodoStatusHandler(todoItem.id, todoItem.is_complete)"
-        />
-        <span class="w-full" :class="{ 'line-through': todoItem.is_complete }">{{
-          todoItem.text
-        }}</span>
+    <article class="line-clamp-[10]">
+      <div v-for="(todoItem, index) in todo.todo_items" :key="index">
+        <div v-if="!todoItem.is_complete" class="my-2">
+          <input
+            type="checkbox"
+            v-model="todoItem.is_complete"
+            class="mr-2"
+            @click="
+              onChangeTodoStatusHandler(todoItem.id, todoItem.is_complete)
+            "
+          />
+          <span
+            class="w-full"
+            :class="{ 'line-through': todoItem.is_complete }"
+            >{{ todoItem.text }}</span
+          >
+        </div>
       </div>
-    </div>
-    <hr>
+    </article>
+    <hr />
+   <article class="line-clamp-5">
     <div v-for="(todoItem, index) in todo.todo_items" :key="index">
       <div v-if="todoItem.is_complete" class="my-2">
-        <input type="checkbox" class="mr-2" v-model="todoItem.is_complete" @click="onChangeTodoStatusHandler(todoItem.id, todoItem.is_complete)"/>
+        <input
+          type="checkbox"
+          class="mr-2"
+          v-model="todoItem.is_complete"
+          @click="onChangeTodoStatusHandler(todoItem.id, todoItem.is_complete)"
+        />
         <span
           class="w-full text-gray-500"
           :class="{ 'line-through': todoItem.is_complete }"
@@ -69,5 +80,6 @@ const redirectToDetail = (name: string, id: string) => {
         >
       </div>
     </div>
+   </article>
   </div>
 </template>
