@@ -4,13 +4,7 @@ import AddItem from "./AddItem.vue";
 import AddNoteForm from "./AddNoteForm.vue";
 import AddTodoForm from "./AddTodoForm.vue";
 import NotesTodosContainer from "./NotesTodosContainer.vue";
-// import NoteDetail from "./NoteDetail.vue";
 import { ref } from "vue";
-// import { useRoute, useRouter } from "vue-router";
-
-// const route = useRoute();
-// const router = useRouter()
-// const showModal= ref<boolean>(false)
 
 const showNoteForm = ref<boolean>(false);
 const showTodoForm = ref<boolean>(false);
@@ -32,27 +26,6 @@ const updateShowNoteForm = (showForm: boolean) => {
 const updateShowTodoForm = (showForm: boolean) => {
   showTodoForm.value = showForm;
 };
-
-// const checkModal = () => {
-//   if(route.params.modal) {
-//     showModal.value = true
-//   } else {
-//     showModal.value = true
-//   }
-// }
-
-// // const showModalFunction = () => {
-// //   router.push()
-// // }
-
-// watch(route, checkModal);
-
-// watch(showModal, (to, from) => {
-//   if (!to && route.params.id) {
-//     router.push('/');
-//     console.log(from)
-//   }
-// });
 
 </script>
 <template>
@@ -84,8 +57,6 @@ const updateShowTodoForm = (showForm: boolean) => {
       />
 
       <NotesTodosContainer :searchKeyword="searchKeyword"/>
-
-      
     </section>
   </main>
 </template>

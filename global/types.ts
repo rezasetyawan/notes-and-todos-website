@@ -20,50 +20,50 @@ interface GetNote {
 
 
 interface TodoData {
-    id:string,
-    title?:string,
+    id: string,
+    title?: string,
     created_at: string,
-    updated_at:string,
+    updated_at: string,
     todo_items: AddTodoItem[]
 }
 
 interface AddTodo {
-    id:string,
-    title?:string,
+    id: string,
+    title?: string,
     created_at: string,
-    updated_at:string,
+    updated_at: string,
 }
 
 interface UpdateTodo {
-    title?:string,
+    title?: string,
     updated_at: string
 }
 
 interface GetTodo {
-    id:string,
-    title?:string,
-    created_at?:string,
-    updated_at:string,
+    id: string,
+    title?: string,
+    created_at?: string,
+    updated_at: string,
     todo_items: GetTodoItem[]
 }
 
 interface AddTodoItem {
     id: string,
     text: string,
-    isActive: boolean,
-    todo_id:string
+    is_complete: boolean,
+    todo_id: string
 }
 
 interface UpdateTodoItem {
     text?: string,
-    isActive: boolean
+    is_complete: boolean
 }
 
 interface GetTodoItem {
     id: string,
     text: string,
-    isActive: boolean,
-    todo_id:string
+    is_complete: boolean,
+    todo_id: string
 }
 
-export type { AddNote, UpdateNote, GetNote, TodoData,AddTodo,  UpdateTodo, GetTodo, AddTodoItem, UpdateTodoItem, GetTodoItem}
+export type { AddNote, UpdateNote, GetNote, TodoData, AddTodo, UpdateTodo, GetTodo, AddTodoItem, UpdateTodoItem, GetTodoItem }

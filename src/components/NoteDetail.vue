@@ -7,21 +7,20 @@ import { updateNoteById, deleteNoteById } from "../vuetils/useNote";
 import type { GetNote } from "../../global/types";
 
 const { showModal } = defineProps(["showModal"]);
-
 const emit = defineEmits(["closeNoteDetail"]);
 
 const router = useRouter();
+const route = useRoute();
+
+const noteId = ref<string>(route.params.id as string);
 
 const closeNoteDetail = () => {
   emit("closeNoteDetail");
   router.push("/");
 };
 
-const route = useRoute();
+
 const textAreaRef = ref<HTMLTextAreaElement | null>(null);
-
-const noteId = ref<string>(route.params.id as string);
-
 const note = ref<GetNote | null>();
 const currentNoteData = ref<{ title: string; text: string }>({
   title: "",
@@ -69,9 +68,6 @@ const closeButtonHandler = async (noteId: string) => {
     updated_at: updatedAt,
   };
 
-  console.log(note.text);
-  console.log(currentNoteData.value.text);
-
   if (isNoteDataChanged.value) {
     await updateNoteById(note, noteId)
       .then(() => {
@@ -111,14 +107,14 @@ const resizeTextArea = () => {
   <section v-if="note">
     <div
       tabindex="-1"
-      class="fixed top-0 left-0 right-0 z-[100] w-full overflow-hidden h-screen p-5 bg-black/80"
+      class="fixed top-0 left-0 right-0 z-[100] w-full overflow-hidden h-screen p-5 bg-black/80 flex items-center justify-center"
     >
       <div
-        class="relative w-full max-w-sm max-h-full mx-auto top-[30%] md:top-[25%]"
-        :class="{ open: showModal }"
+        class="relative w-full max-w-[60%] max-h-full mx-auto"
+        :class="{ open: showModal, close: !showModal }"
       >
-        <div class="relative p-3 rounded-lg w-[448px] bg-white">
-          <div class="absolute top-1 right-1">
+        <div class="relative p-3 pr-4 rounded-lg max-h-[500px] overflow-scroll bg-white">
+          <div class="absolute top-1 right-4">
             <button
               class="px-2 py-1 bg-slate-200 rounded-md"
               @click="
@@ -135,7 +131,8 @@ const resizeTextArea = () => {
             v-model="currentNoteData.title"
           />
           <textarea
-            class="my-5 block focus:outline-none w-full h-full"
+            class="my-5 block focus:outline-none w-full h-full p-1"
+            spellcheck="false"
             v-model="currentNoteData.text"
             ref="textAreaRef"
             @input="resizeTextArea"
@@ -164,11 +161,30 @@ const resizeTextArea = () => {
 .open {
   animation: fadeup 250ms;
 }
+.close {
+  animation: fadedown 250ms;
+}
+
+textarea::selection {
+  background-color: black;
+  color: white;
+}
+
+@keyframes fadedown {
+  from {
+    opacity: 1;
+    top: 30%;
+  }
+  to {
+    opacity: 0;
+    top: 35%;
+  }
+}
 
 @keyframes fadeup {
   from {
     opacity: 0;
-    top: 25%;
+    top: 35%;
   }
   to {
     opacity: 1;
@@ -180,11 +196,22 @@ const resizeTextArea = () => {
   @keyframes fadeup {
     from {
       opacity: 0;
-      top: 20%;
+      top: -5%;
     }
     to {
       opacity: 1;
-      top: 25%;
+      top: 0%;
+    }
+  }
+
+  @keyframes fadedown {
+    from {
+      opacity: 1;
+      top: 0%;
+    }
+    to {
+      opacity: 0;
+      top: -5%;
     }
   }
 }

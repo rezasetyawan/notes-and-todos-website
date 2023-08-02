@@ -70,6 +70,7 @@ onMounted(() => {
         v-model="noteData.text"
         class="block w-full focus:outline-none p-1 my-2 text-slate-600 placeholder:text-slate-600"
         placeholder="Write your note here"
+        spellcheck="false"
         ref="textAreaRef"
         @input="resizeTextArea"
       ></textarea>
@@ -77,4 +78,10 @@ onMounted(() => {
     </form>
   </section>
 </template>
-../vuetils/useNote
+
+<style scoped>
+textarea::selection {
+  background-color: black;
+  color: white;
+}
+</style>

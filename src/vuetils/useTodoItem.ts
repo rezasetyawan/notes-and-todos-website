@@ -18,7 +18,7 @@ const addTodoItem = async (todoItems: AddTodoItem[]) => {
 
 const getTodoItems = async (todoId: string): Promise<GetTodoItem[]> => {
     try {
-        const { data: todoItems, error } = await supabase.from('todo_items').select('id, text, isActive, todo_id').eq('todo_id', todoId)
+        const { data: todoItems, error } = await supabase.from('todo_items').select('id, text, is_complete, todo_id').eq('todo_id', todoId)
 
         if (error) {
             console.error(error.message)

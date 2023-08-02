@@ -24,7 +24,7 @@ const todoData = ref<TodoData>({
     {
       id: `todo_item-${nanoid(16)}`,
       text: "",
-      isActive: true,
+      is_complete: false,
       todo_id: todoId,
     },
   ],
@@ -38,7 +38,7 @@ const addTodoItemInputElement = () => {
   todoData.value.todo_items.push({
     id: `todo_item-${nanoid(16)}`,
     text: "",
-    isActive: true,
+    is_complete: false,
     todo_id: todoId,
   });
 };
@@ -70,14 +70,6 @@ const handleDelete = (index: number) => {
   }
 };
 
-const isChecked = (index: number) => {
-  return !todoData.value.todo_items[index].isActive;
-};
-
-const handleCheckboxToggle = (index: number) => {
-  todoData.value.todo_items[index].isActive =
-    !todoData.value.todo_items[index].isActive;
-};
 const filteredTodoItems = computed(() => {
   return todoData.value.todo_items.filter((todo) => {
     return todo.text !== "";
@@ -129,8 +121,7 @@ onMounted(() => {
       >
         <input
           type="checkbox"
-          :checked="isChecked(index)"
-          @change="handleCheckboxToggle(index)"
+          v-model="todoItem.is_complete"
           class="block w-4 h-4 p-1 ml-3"
         />
         <input

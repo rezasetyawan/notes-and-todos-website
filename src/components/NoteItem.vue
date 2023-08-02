@@ -2,13 +2,11 @@
 import { useRouter } from "vue-router";
 
 const { note } = defineProps(["note"]);
-
 const emit = defineEmits(["openModal"]);
-
 const router = useRouter();
 
 const openModal = () => {
-  emit("openModal"); // dari emit ("openModal", true)
+  emit("openModal");
 };
 
 const redirectToDetail = (name: string, id: string) => {
@@ -27,6 +25,6 @@ const redirectToDetail = (name: string, id: string) => {
     "
   >
     <h3 class="text-lg font-semibold">{{ note.title }}</h3>
-    <p>{{ note.text }}</p>
+    <p class="line-clamp-6">{{ note.text }}</p>
   </div>
 </template>
