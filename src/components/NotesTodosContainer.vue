@@ -22,7 +22,6 @@ const loading = ref<boolean>(true);
 onMounted(async () => {
   try {
     if (!notes.value.length || !notes.value.length) {
-         
       const fetchedNotes = await getNotes();
       notes.value = fetchedNotes || [];
       const fetchedTodos = await getTodos();
@@ -44,17 +43,27 @@ const filteredNotes = computed(() => {
   );
 });
 
+const filteredTodos = computed(() => {
+  let { searchKeyword } = props;
+  return todos.value.filter(
+    (todo) => todo.title?.toLowerCase().includes(searchKeyword.toLowerCase())
+  );
+});
 const checkModal = () => {
   showModal.value = !!route.params.id; // Set showModal based on the presence of route.params.id
 };
 
 watch(route, checkModal);
 
-watch(showModal, (to) => {
-  if (!to && route.params.id) {
-    router.push("/");
-  }
-}, {immediate: true});
+watch(
+  showModal,
+  (to) => {
+    if (!to && route.params.id) {
+      router.push("/");
+    }
+  },
+  { immediate: true }
+);
 </script>
 
 <template>
@@ -62,14 +71,14 @@ watch(showModal, (to) => {
     <h3 v-if="loading" class="text-center my-5">Loading...</h3>
 
     <article
-      v-else-if="filteredNotes.length"
+      v-else-if="filteredNotes.length || filteredTodos.length"
       class="gap-2 columns-1 space-y-2 md:columns-3 lg:columns-4"
     >
       <div v-for="(note, index) in filteredNotes" :key="index">
         <NoteItem :note="note" @openModal="showModal = true" />
       </div>
 
-      <div v-for="todo in todos" :key="todo.id">
+      <div v-for="todo in filteredTodos" :key="todo.id">
         <TodoContainer
           :todo="todo"
           @openModal="showModal = true"
@@ -85,13 +94,13 @@ watch(showModal, (to) => {
     <TodoDetail :showModal="showModal" @closeTodoDetail="showModal = false" />
 
     <h3
-      v-if="!filteredNotes.length && notes.length > 0"
+      v-if="!filteredNotes.length && !filteredTodos.length"
       class="text-lg text-center my-5"
     >
       Not Found
     </h3>
 
-    <h3 v-if="!notes.length" class="text-lg text-center my-5">
+    <h3 v-if="!notes.length && !todos.length" class="text-lg text-center my-5">
       You dont have any notes
     </h3>
   </section>
