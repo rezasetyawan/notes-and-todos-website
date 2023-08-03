@@ -4,9 +4,9 @@ import { supabase } from "../lib/supabase";
 
 // const userSession = ref<Session | null>(null)
 
-const getUserSession =  async ():Promise<Session | null> => {
+const getUserSession = async (): Promise<Session | null> => {
     try {
-        const {data, error} = await supabase.auth.getSession()
+        const { data, error } = await supabase.auth.getSession()
         if (error) {
             console.error(error.message);
             throw new Error(error.message);
@@ -25,8 +25,7 @@ const signUpUser = async ({ email, password }: User) => {
             password
         })
         if (error) {
-            console.error(error.message);
-            throw new Error(error.message);
+            throw new Error(error.name);
         }
         return data
     } catch (error: any) {
@@ -42,8 +41,7 @@ const signInUser = async ({ email, password }: User) => {
             password
         })
         if (error) {
-            console.error(error.message);
-            throw new Error(error.message);
+            throw new Error(error.message)
         }
         return data
     } catch (error: any) {

@@ -6,10 +6,6 @@ const { showConfirmationModal, actionFunction } = defineProps([
 
 const emit = defineEmits(["closeModal"]);
 
-const callActionFunction = async () => {
-  await actionFunction();
-};
-
 const closeModal = () => {
   emit("closeModal");
 };
@@ -67,7 +63,7 @@ const closeModal = () => {
             <button
               type="button"
               class="text-white font-sans bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm inline-flex items-center px-3 py-2.5 text-center mr-2"
-              @click="callActionFunction"
+              @click="actionFunction"
             >
               Yes, I&apos;m sure
             </button>

@@ -1,10 +1,13 @@
 <script setup lang="ts">
+import { useRouter } from 'vue-router';
 import { signOutUser } from '../vuetils/useAuth';
 import ConfirmationModal from './ConfirmationModal.vue'
 import { ref } from "vue";
 
 const { searchKeyword } = defineProps(["searchKeyword"]);
 const emit = defineEmits(["updateSearchKeyword"]);
+
+const router = useRouter()
 
 const localSearchKey = ref<string>(searchKeyword);
 
@@ -14,15 +17,21 @@ const onInputKeywordHandler = () => {
 
 const showConfimationModal = ref<boolean>(false)
 
+const signOutUserHandler = async () => {
+  await signOutUser().then(()=>{
+    router.push('/auth/signin')
+  })
+}
+
 </script>
 <template>
-  <ConfirmationModal :showConfirmationModal="showConfimationModal" :actionFunction="signOutUser" @closeModal="showConfimationModal = false">Are you sure want to sign out?</ConfirmationModal>
+  <ConfirmationModal :showConfirmationModal="showConfimationModal" :actionFunction="signOutUserHandler" @closeModal="showConfimationModal = false">Are you sure want to sign out?</ConfirmationModal>
   <header class="bg-white shadow-lg sticky top-0" :class="{'z-[100]':!showConfimationModal}" >
     <section
       class="grid grid-cols-3 place-items-center justify-items-center p-4"
     >
-      <h1 class="text-2xl font-semibold justify-self-start text-slate-600">
-        Keep
+      <h1 class="text-3xl font-semibold justify-self-start text-slate-600 font-poppins">
+        Scribblr
       </h1>
 
       <input

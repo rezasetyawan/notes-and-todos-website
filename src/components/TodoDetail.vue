@@ -248,16 +248,16 @@
     <section v-if="todo">
       <div
       tabindex="-1"
-      class="fixed top-0 left-0 right-0 z-[100] w-full overflow-hidden h-screen p-5 bg-black/80 flex items-center justify-center"
+      class="fixed top-0 left-0 right-0 z-[100] w-full overflow-hidden h-screen bg-black/80 flex items-center justify-center"
     >
         <div
           class="relative p-4 mx-auto"
           :class="{ open: showModal, close: !showModal }"
         >
           <div
-            class="p-3 pr-4 min-w-[500px] max-h-[500px] overflow-scroll relative bg-white rounded-md"
+            class="p-3 min-w-[500px] max-h-[500px] overflow-scroll relative bg-white rounded-md"
           >
-            <div class="absolute top-1 right-4">
+            <div class="absolute top-1 right-1">
               <button
                 class="px-2 py-1 bg-slate-200 rounded-md"
                 @click="

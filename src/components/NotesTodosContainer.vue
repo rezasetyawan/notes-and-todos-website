@@ -23,9 +23,12 @@ const loading = ref<boolean>(true);
 const userSession = ref();
 userSession.value = await getUserSession()
 
-console.log(userSession.value)
-
-
+onBeforeMount(async () => {
+  userSession.value = await getUserSession();
+  if (!userSession.value) {
+    router.push("/auth/signin");
+  }
+});
 
 onMounted(async () => {
   try {
@@ -92,7 +95,6 @@ watch(
           @openModal="showModal = true"
         ></TodoContainer>
       </div>
-      
     </article>
 
     <NoteDetail

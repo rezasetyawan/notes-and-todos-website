@@ -3,21 +3,27 @@ import { ref } from "vue";
 import { User } from "../../global/types";
 import { signUpUser } from "../vuetils/useAuth";
 import { useRouter } from "vue-router";
-import OnContentLoading from "./OnContentLoading.vue"
+import OnContentLoading from "./OnContentLoading.vue";
 
 const router = useRouter();
 const isPasswordVisible = ref<boolean>(false);
 const userData = ref<User>({ email: "", password: "" });
 const isOnProgess = ref<boolean>(false);
+const errorMessage = ref<string>("");
 
 const onSubmitHandler = async () => {
   try {
     isOnProgess.value = true;
-    await signUpUser(userData.value).then((data) => {
-      console.log(data)
-      isOnProgess.value = false;
-      router.push("/");
-    });
+    await signUpUser(userData.value)
+      .then((data) => {
+        console.log(data);
+        isOnProgess.value = false;
+        router.push("/");
+      })
+      .catch((error) => {
+        isOnProgess.value = false;
+        errorMessage.value = error.message;
+      });
   } catch (error) {
     console.error(error);
   }
@@ -28,11 +34,12 @@ const onSubmitHandler = async () => {
     class="box-border flex justify-center items-center text-center bg-gray-50 h-screen"
   >
     <form
-      class="min-w-[90%] sm:min-w-[400px] font-poppins"
+      class="min-w-[90%] sm:min-w-[400px] font-poppins relative"
       @submit.prevent="onSubmitHandler"
       :style="{ cursor: isOnProgess ? 'progress' : 'default' }"
     >
       <h2 class="text-3xl font-bold my-16">SignUp</h2>
+      <p class="absolute top-[30%] text-sm text-red-600 font-medium text-left">{{ errorMessage }}</p>
       <input
         class="focus:outline-none p-3 border-[1px] border-accent-color2 block my-4 rounded-md w-full"
         type="email"
@@ -93,7 +100,7 @@ const onSubmitHandler = async () => {
         >
       </p>
     </form>
-    <OnContentLoading v-if="isOnProgess"/>
+    <OnContentLoading v-if="isOnProgess" />
   </main>
 </template>
 <style scoped></style>
