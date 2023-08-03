@@ -3,6 +3,7 @@ import { onMounted, ref } from "vue";
 import { nanoid } from "nanoid";
 import { addNote } from "../vuetils/useNote.ts";
 import { AddNote } from "../../global/types";
+import { getUserSession } from "../vuetils/useAuth";
 
 const { showNoteForm, noteData } = defineProps(["showNoteForm", "noteData"]);
 const emit = defineEmits(["updateShowNoteForm", "firstInput"]);
@@ -11,6 +12,11 @@ const textAreaRef = ref<HTMLTextAreaElement | null>(null);
 
 const toggleNoteForm = () => {
   emit("updateShowNoteForm", !showNoteForm);
+};
+
+const userSession = ref()
+const fetchUserSession = async () => {
+  userSession.value = await getUserSession();
 };
 
 const resetForm = () => {
@@ -26,6 +32,7 @@ const onSubmitHandler = async () => {
     ...noteData,
     created_at: currentTime,
     updated_at: currentTime,
+    author: userSession.value.user.id
   };
 
   if (noteData.text) {
@@ -48,10 +55,11 @@ const resizeTextArea = () => {
   }
 };
 
-onMounted(() => {
+onMounted(async () => {
   if (showNoteForm) {
     textAreaRef.value?.focus();
   }
+  await fetchUserSession()
 });
 </script>
 

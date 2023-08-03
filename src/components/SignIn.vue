@@ -1,28 +1,55 @@
 <script setup lang="ts">
 import { ref } from "vue";
+import { User } from "../../global/types";
+import { useRouter } from "vue-router";
+import { signInUser } from "../vuetils/useAuth";
+import OnContentLoading from "./OnContentLoading.vue";
 
+const router = useRouter();
 const isPasswordVisible = ref<boolean>(false);
+const userData = ref<User>({ email: "", password: "" });
+const isOnProgess = ref<boolean>(false);
+
+const onSubmitHandler = async () => {
+  try {
+    isOnProgess.value = true;
+    await signInUser(userData.value).then(() => {
+      isOnProgess.value = false;
+      router.push("/");
+    });
+  } catch (error) {
+    console.error(error);
+  }
+};
 </script>
 <template>
   <main
     class="box-border flex justify-center items-center text-center bg-gray-50 h-screen"
   >
-    <form class="sm:min-w-[400px] font-poppins">
+    <form
+      class="min-w-[90%] sm:min-w-[400px] font-poppins"
+      @submit.prevent="onSubmitHandler"
+    >
       <h2 class="text-3xl font-bold my-16">Login</h2>
       <input
         class="focus:outline-none p-3 border-[1px] border-accent-color2 block my-4 rounded-md w-full"
         type="email"
         placeholder="email"
         required
+        v-model="userData.email"
       />
       <div class="relative">
         <input
           class="focus:outline-none p-3 border-[1px] border-accent-color2 block my-4 rounded-md w-full"
-          :type="isPasswordVisible ? 'password' : 'text'"
+          :type="isPasswordVisible ? 'text' : 'password'"
           placeholder="password"
           required
+          v-model="userData.password"
         />
-        <span class="absolute top-[35%] right-3 cursor-pointer" @click="isPasswordVisible = !isPasswordVisible">
+        <span
+          class="absolute top-[35%] right-3 cursor-pointer"
+          @click="isPasswordVisible = !isPasswordVisible"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 640 512"
@@ -51,11 +78,19 @@ const isPasswordVisible = ref<boolean>(false);
       <button
         type="submit"
         class="text-lg font-sembibold text-white px-4 py-3 rounded-md bg-accent-color2 w-full"
+        :style="{ cursor: isOnProgess ? 'progress' : 'default' }"
+        :disabled="isOnProgess"
       >
         SignIn
       </button>
-      <p class="text-left my-3"> Don&rsquo;t have account? <RouterLink :to="'/auth/signup'" class="text-blue-700">SignUp</RouterLink></p>
+      <p class="text-left my-3">
+        Don&rsquo;t have account?
+        <RouterLink :to="'/auth/signup'" class="text-blue-700"
+          >SignUp</RouterLink
+        >
+      </p>
     </form>
+    <OnContentLoading v-if="isOnProgess" />
   </main>
 </template>
 <style scoped></style>

@@ -15,9 +15,9 @@ const addNote = async (note: AddNote) => {
     }
 }
 
-const getNotes = async (): Promise<GetNote[]> => {
+const getNotes = async (author: string | null): Promise<GetNote[]> => {
     try {
-        const { data: notes, error } = await supabase.from('notes').select('id, title, text, updated_at')
+        const { data: notes, error } = await supabase.from('notes').select('id, title, text, updated_at').eq('author', author ? author : "")
         if (error) {
             console.error(error.message);
             throw new Error(error.message);

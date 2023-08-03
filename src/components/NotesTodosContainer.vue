@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, onMounted, watch } from "vue";
+import { computed, ref, onMounted, watch, onBeforeMount } from "vue";
 import { GetNote, GetTodo } from "../../global/types";
 import { getNotes } from "../vuetils/useNote";
 import NoteItem from "./NoteItem.vue";
@@ -8,6 +8,7 @@ import { getTodos } from "../vuetils/useTodo";
 import TodoContainer from "./TodoContainer.vue";
 import TodoDetail from "./TodoDetail.vue";
 import { useRoute, useRouter } from "vue-router";
+import { getUserSession } from "../vuetils/useAuth";
 
 const route = useRoute();
 const router = useRouter();
@@ -19,12 +20,23 @@ const notes = ref<GetNote[]>([]);
 const todos = ref<GetTodo[]>([]);
 const loading = ref<boolean>(true);
 
+const userSession = ref();
+userSession.value = await getUserSession()
+
+console.log(userSession.value)
+
+onBeforeMount(() => {
+  if (!userSession) {
+    router.push("/auth/signin");
+  }
+});
+
 onMounted(async () => {
   try {
-    if (!notes.value.length || !notes.value.length) {
-      const fetchedNotes = await getNotes();
+    if (!notes.value.length || !todos.value.length) {
+      const fetchedNotes = await getNotes(userSession.value.user.id);
       notes.value = fetchedNotes || [];
-      const fetchedTodos = await getTodos();
+      const fetchedTodos = await getTodos(userSession.value.user.id);
       todos.value = fetchedTodos || [];
     }
   } catch (error) {

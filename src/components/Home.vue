@@ -56,7 +56,9 @@ const updateShowTodoForm = (showForm: boolean) => {
         @updateShowTodoForm="updateShowTodoForm"
       />
 
-      <NotesTodosContainer :searchKeyword="searchKeyword"/>
+      <Suspense>
+        <NotesTodosContainer :searchKeyword="searchKeyword"/>
+      </Suspense>
     </section>
   </main>
 </template>

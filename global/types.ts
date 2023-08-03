@@ -3,7 +3,8 @@ interface AddNote {
     title: string,
     text: string,
     created_at: string,
-    updated_at: string
+    updated_at: string,
+    author: string
 }
 
 interface UpdateNote {
@@ -18,13 +19,13 @@ interface GetNote {
     updated_at: string;
 }
 
-
 interface TodoData {
     id: string,
     title?: string,
     created_at: string,
     updated_at: string,
-    todo_items: AddTodoItem[]
+    todo_items: AddTodoItem[],
+    author: string
 }
 
 interface AddTodo {
@@ -66,4 +67,9 @@ interface GetTodoItem {
     todo_id: string
 }
 
-export type { AddNote, UpdateNote, GetNote, TodoData, AddTodo, UpdateTodo, GetTodo, AddTodoItem, UpdateTodoItem, GetTodoItem }
+interface User {
+    email: string,
+    password: string
+}
+
+export type { AddNote, UpdateNote, GetNote, TodoData, AddTodo, UpdateTodo, GetTodo, AddTodoItem, UpdateTodoItem, GetTodoItem, User }

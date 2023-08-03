@@ -4,6 +4,7 @@ import { nanoid } from "nanoid";
 import { TodoData } from "../../global/types";
 import { addTodo } from "../vuetils/useTodo";
 import { addTodoItem } from "../vuetils/useTodoItem";
+import { getUserSession } from "../vuetils/useAuth";
 
 const { showTodoForm } = defineProps(["showTodoForm"]);
 
@@ -11,6 +12,12 @@ const emit = defineEmits(["updateShowTodoForm"]);
 
 const toggleTodoForm = () => {
   emit("updateShowTodoForm", !showTodoForm);
+};
+
+
+const userSession = ref()
+const fetchUserSession = async () => {
+  userSession.value = await getUserSession();
 };
 
 const todoId: string = `todo-${nanoid(16)}`;
@@ -28,6 +35,7 @@ const todoData = ref<TodoData>({
       todo_id: todoId,
     },
   ],
+  author: userSession.value.user.id
 });
 
 let currentIndex = ref<number>(0);
@@ -97,10 +105,11 @@ const onSubmitHandler = async () => {
   toggleTodoForm();
 };
 
-onMounted(() => {
+onMounted(async () => {
   if (showTodoForm) {
     inputRefs.value[0]?.focus();
   }
+  await fetchUserSession()
 });
 </script>
 

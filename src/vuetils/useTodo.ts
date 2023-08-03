@@ -36,9 +36,9 @@ const addTodo = async (todo: AddTodo) => {
 //     }
 // }
 
-const getTodos = async (): Promise<GetTodo[]> => {
+const getTodos = async (author: string | null): Promise<GetTodo[]> => {
     try {
-        const { data: todos, error } = await supabase.from('todos').select('id, title, updated_at');
+        const { data: todos, error } = await supabase.from('todos').select('id, title, updated_at').eq('author', author);
 
         if (error) {
             console.error(error.message);
@@ -96,7 +96,7 @@ const getTodoById = async (todoId: string): Promise<GetTodo | null> => {
     }
 }
 
-const updateTodoById = async ( todoId: string, todo: UpdateTodo) => {
+const updateTodoById = async (todoId: string, todo: UpdateTodo) => {
     try {
         const { data, error } = await supabase.from('todos').update(todo).eq('id', todoId)
 
