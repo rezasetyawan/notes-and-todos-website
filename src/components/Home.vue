@@ -4,7 +4,13 @@ import AddItem from "./AddItem.vue";
 import AddNoteForm from "./AddNoteForm.vue";
 import AddTodoForm from "./AddTodoForm.vue";
 import NotesTodosContainer from "./NotesTodosContainer.vue";
-import { ref } from "vue";
+import { onBeforeMount, ref } from "vue";
+import { useRouter } from "vue-router";
+import { getUserSession } from "../vuetils/useAuth";
+
+const router = useRouter();
+const userSession = ref();
+
 
 const showNoteForm = ref<boolean>(false);
 const showTodoForm = ref<boolean>(false);
@@ -19,6 +25,13 @@ const noteData = ref<NoteData>({
   text: "",
 });
 
+onBeforeMount(async () => {
+  userSession.value = await getUserSession();
+  console.log(userSession.value)
+  if (!userSession.value) {
+    router.push("/auth/signin");
+  }
+});
 const updateShowNoteForm = (showForm: boolean) => {
   showNoteForm.value = showForm;
 };
@@ -26,7 +39,6 @@ const updateShowNoteForm = (showForm: boolean) => {
 const updateShowTodoForm = (showForm: boolean) => {
   showTodoForm.value = showForm;
 };
-
 </script>
 <template>
   <main class="font-open-sans box-border">
@@ -42,7 +54,7 @@ const updateShowTodoForm = (showForm: boolean) => {
         :noteData="noteData"
       />
       <AddTodoForm
-         v-else-if="showTodoForm"
+        v-else-if="showTodoForm"
         :showTodoForm="showTodoForm"
         @updateShowTodoForm="updateShowTodoForm"
       />
@@ -57,7 +69,7 @@ const updateShowTodoForm = (showForm: boolean) => {
       />
 
       <Suspense>
-        <NotesTodosContainer :searchKeyword="searchKeyword"/>
+        <NotesTodosContainer :searchKeyword="searchKeyword" />
       </Suspense>
     </section>
   </main>

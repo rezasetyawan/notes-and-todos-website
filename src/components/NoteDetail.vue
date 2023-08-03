@@ -113,7 +113,7 @@ const resizeTextArea = () => {
         class="relative w-full max-w-[60%] max-h-full mx-auto"
         :class="{ open: showModal, close: !showModal }"
       >
-        <div class="relative p-3 pr-4 rounded-lg max-h-[500px] overflow-scroll bg-white">
+        <div class="relative p-3 pr-4 rounded-lg max-h-[500px] overflow-y-scroll bg-white">
           <div class="absolute top-1 right-4">
             <button
               class="px-2 py-1 bg-slate-200 rounded-md"

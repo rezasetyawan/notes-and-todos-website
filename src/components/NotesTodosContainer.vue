@@ -25,11 +25,7 @@ userSession.value = await getUserSession()
 
 console.log(userSession.value)
 
-onBeforeMount(() => {
-  if (!userSession) {
-    router.push("/auth/signin");
-  }
-});
+
 
 onMounted(async () => {
   try {
@@ -96,6 +92,7 @@ watch(
           @openModal="showModal = true"
         ></TodoContainer>
       </div>
+      
     </article>
 
     <NoteDetail
