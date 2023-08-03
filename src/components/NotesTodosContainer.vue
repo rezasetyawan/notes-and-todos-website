@@ -64,7 +64,9 @@ const checkModal = () => {
   showModal.value = !!route.params.id; // Set showModal based on the presence of route.params.id
 };
 
-watch(route, checkModal);
+watch(route,() => {
+  checkModal()
+},{immediate: true});
 
 watch(
   showModal,
