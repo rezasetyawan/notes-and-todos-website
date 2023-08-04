@@ -28,13 +28,13 @@ const onChangeTodoStatusHandler = async (
 };
 
 const redirectToDetail = (name: string, id: string) => {
-  router.push(`${name}/${id}`);
+  router.replace({ path: `/${name}/${id}` });
 };
 </script>
 <template>
   <div class="p-3 border-2 border-slate-600 rounded-lg break-inside-avoid">
     <h3
-      class="text-lg font-semibold"
+      class="text-lg font-semibold w-full"
       @click="
         () => {
           redirectToDetail('todo', todo.id);
@@ -42,11 +42,11 @@ const redirectToDetail = (name: string, id: string) => {
         }
       "
     >
-      {{ todo.title }}
+      {{ todo.title || "-" }}
     </h3>
     <article class="line-clamp-[10]">
       <div v-for="(todoItem, index) in todo.todo_items" :key="index">
-        <div v-if="!todoItem.is_complete" class="my-2">
+        <div v-if="!todoItem.is_complete" class="my-2 w-full">
           <input
             type="checkbox"
             v-model="todoItem.is_complete"
@@ -56,30 +56,42 @@ const redirectToDetail = (name: string, id: string) => {
             "
           />
           <span
-            class="w-full"
+            class="inline-block min-w-[80%]"
             :class="{ 'line-through': todoItem.is_complete }"
+            @click="
+              () => {
+                redirectToDetail('todo', todo.id);
+              }
+            "
             >{{ todoItem.text }}</span
           >
         </div>
       </div>
     </article>
     <hr />
-   <article class="line-clamp-5">
-    <div v-for="(todoItem, index) in todo.todo_items" :key="index">
-      <div v-if="todoItem.is_complete" class="my-2">
-        <input
-          type="checkbox"
-          class="mr-2"
-          v-model="todoItem.is_complete"
-          @click="onChangeTodoStatusHandler(todoItem.id, todoItem.is_complete)"
-        />
-        <span
-          class="w-full text-gray-500"
-          :class="{ 'line-through': todoItem.is_complete }"
-          >{{ todoItem.text }}</span
-        >
+    <article class="line-clamp-5">
+      <div v-for="(todoItem, index) in todo.todo_items" :key="index">
+        <div v-if="todoItem.is_complete" class="my-2">
+          <input
+            type="checkbox"
+            class="mr-2"
+            v-model="todoItem.is_complete"
+            @click="
+              onChangeTodoStatusHandler(todoItem.id, todoItem.is_complete)
+            "
+          />
+          <span
+            class="inline-block min-w-[80%] text-gray-500"
+            :class="{ 'line-through': todoItem.is_complete }"
+            @click="
+              () => {
+                redirectToDetail('todo', todo.id);
+              }
+            "
+            >{{ todoItem.text }}</span
+          >
+        </div>
       </div>
-    </div>
-   </article>
+    </article>
   </div>
 </template>

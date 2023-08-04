@@ -7,10 +7,6 @@ const { showNoteForm, noteData , showTodoForm} = defineProps([
 ]);
 const emit = defineEmits(["updateShowNoteForm", "firstInput", "updateShowTodoForm"]);
 
-// const toggleNoteForm = () => {
-//   emit("updateShowNoteForm", !showNoteForm);
-// };
-
 const triggerNoteForm = () => {
   if (!showNoteForm.value) {
     emit("updateShowNoteForm", true);

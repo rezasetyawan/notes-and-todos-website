@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { onBeforeMount, ref } from "vue";
 import { User } from "../../global/types";
-import { signUpUser } from "../vuetils/useAuth";
+import { getUserSession, signUpUser } from "../vuetils/useAuth";
 import { useRouter } from "vue-router";
 import OnContentLoading from "./OnContentLoading.vue";
 
@@ -10,6 +10,16 @@ const isPasswordVisible = ref<boolean>(false);
 const userData = ref<User>({ email: "", password: "" });
 const isOnProgess = ref<boolean>(false);
 const errorMessage = ref<string>("");
+
+const userSession = ref()
+
+onBeforeMount(async () => {
+  userSession.value = await getUserSession();
+  console.log(userSession.value)
+  if (userSession.value) {
+    router.push("/");
+  }
+});
 
 const onSubmitHandler = async () => {
   try {

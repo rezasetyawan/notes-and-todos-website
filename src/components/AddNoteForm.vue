@@ -4,6 +4,7 @@ import { nanoid } from "nanoid";
 import { addNote } from "../vuetils/useNote.ts";
 import { AddNote } from "../../global/types";
 import { getUserSession } from "../vuetils/useAuth";
+import { showSuccessToast, showErrorToast } from "../vuetils/toast";
 
 const { showNoteForm, noteData } = defineProps(["showNoteForm", "noteData"]);
 const emit = defineEmits(["updateShowNoteForm", "firstInput"]);
@@ -14,7 +15,7 @@ const toggleNoteForm = () => {
   emit("updateShowNoteForm", !showNoteForm);
 };
 
-const userSession = ref()
+const userSession = ref();
 const fetchUserSession = async () => {
   userSession.value = await getUserSession();
 };
@@ -32,16 +33,17 @@ const onSubmitHandler = async () => {
     ...noteData,
     created_at: currentTime,
     updated_at: currentTime,
-    author: userSession.value.user.id
+    author: userSession.value?.user.id,
   };
 
   if (noteData.text) {
     await addNote(note)
       .then(() => {
         resetForm();
+        showSuccessToast("Note added !");
       })
-      .then((error) => {
-        console.error(error);
+      .catch((error) => {
+        showErrorToast(`Failed to add note ${error.message}`);
       });
   }
   toggleNoteForm();
@@ -59,14 +61,14 @@ onMounted(async () => {
   if (showNoteForm) {
     textAreaRef.value?.focus();
   }
-  await fetchUserSession()
+  await fetchUserSession();
 });
 </script>
 
 <template>
   <section class="flex justify-center items-center my-5">
     <form
-      class="bg-white p-5 w-[576px] h-full rounded-lg shadow-lg font-open-sans"
+      class="bg-white p-5 min-w-[576px] max-w-[576px] h-full rounded-lg shadow-lg font-open-sans"
       @submit.prevent="onSubmitHandler"
     >
       <input
@@ -82,7 +84,9 @@ onMounted(async () => {
         ref="textAreaRef"
         @input="resizeTextArea"
       ></textarea>
-      <button type="submit" class="px-2 py-1 font-semibold float-right">Close</button>
+      <button type="submit" class="px-2 py-1 font-semibold float-right">
+        Close
+      </button>
     </form>
   </section>
 </template>

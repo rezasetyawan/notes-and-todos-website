@@ -9,6 +9,7 @@ import TodoContainer from "./TodoContainer.vue";
 import TodoDetail from "./TodoDetail.vue";
 import { useRoute, useRouter } from "vue-router";
 import { getUserSession } from "../vuetils/useAuth";
+import { showSuccessToast, showErrorToast } from "../vuetils/toast";
 
 const route = useRoute();
 const router = useRouter();
@@ -21,7 +22,7 @@ const todos = ref<GetTodo[]>([]);
 const loading = ref<boolean>(true);
 
 const userSession = ref();
-userSession.value = await getUserSession()
+userSession.value = await getUserSession();
 
 onBeforeMount(async () => {
   userSession.value = await getUserSession();
@@ -64,9 +65,13 @@ const checkModal = () => {
   showModal.value = !!route.params.id; // Set showModal based on the presence of route.params.id
 };
 
-watch(route,() => {
-  checkModal()
-},{immediate: true});
+watch(
+  route,
+  () => {
+    checkModal();
+  },
+  { immediate: true }
+);
 
 watch(
   showModal,
@@ -77,6 +82,7 @@ watch(
   },
   { immediate: true }
 );
+
 </script>
 
 <template>
@@ -102,12 +108,19 @@ watch(
     <NoteDetail
       :showModal="showModal"
       @closeNoteDetail="showModal = false"
-    ></NoteDetail>
+      @showSuccessToast = "(message) => showSuccessToast(message)"
+      @showErrorToast = "(message) => showErrorToast(message)"
+    />
 
-    <TodoDetail :showModal="showModal" @closeTodoDetail="showModal = false" />
+    <TodoDetail
+      :showModal="showModal"
+      @closeTodoDetail="showModal = false"
+      @showSuccessToast = "(message) => showSuccessToast(message)"
+      @showErrorToast = "(message) => showErrorToast(message)"
+    />
 
     <h3
-      v-if="!filteredNotes.length && !filteredTodos.length"
+      v-if="!filteredNotes.length && !filteredTodos.length && notes.length && todos.length"
       class="text-lg text-center my-5"
     >
       Not Found

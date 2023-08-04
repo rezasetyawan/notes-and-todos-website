@@ -10,7 +10,7 @@ const openModal = () => {
 };
 
 const redirectToDetail = (name: string, id: string) => {
-  router.push(`${name}/${id}`);
+  router.replace({path: `/${name}/${id}`})
 };
 </script>
 

@@ -7,7 +7,12 @@ import { updateNoteById, deleteNoteById } from "../vuetils/useNote";
 import type { GetNote } from "../../global/types";
 
 const { showModal } = defineProps(["showModal"]);
-const emit = defineEmits(["closeNoteDetail"]);
+const emit = defineEmits([
+  "closeNoteDetail",
+  "noteNotFound",
+  "showSuccessToast",
+  "showErrorToast",
+]);
 
 const router = useRouter();
 const route = useRoute();
@@ -19,7 +24,6 @@ const closeNoteDetail = () => {
   router.push("/");
 };
 
-
 const textAreaRef = ref<HTMLTextAreaElement | null>(null);
 const note = ref<GetNote | null>();
 const currentNoteData = ref<{ title: string; text: string }>({
@@ -29,7 +33,9 @@ const currentNoteData = ref<{ title: string; text: string }>({
 const isNoteDataChanged = ref<boolean>(false);
 
 const fetchNoteData = async () => {
-  note.value = await getNoteById(noteId.value);
+  await getNoteById(noteId.value).then((data) => {
+    note.value = data;
+  });
   if (note.value) {
     currentNoteData.value.title = note.value.title || "";
     currentNoteData.value.text = note.value.text || "";
@@ -49,17 +55,22 @@ onMounted(() => {
         noteId.value = newId as string;
         fetchNoteData();
       }
-    }
+    },
+    { immediate: true }
   );
 });
 
-watch(currentNoteData.value, () => {
-  if (note.value) {
-    isNoteDataChanged.value =
-      currentNoteData.value.text !== note.value.text ||
-      currentNoteData.value.title !== note.value.title;
-  }
-});
+watch(
+  currentNoteData.value,
+  () => {
+    if (note.value) {
+      isNoteDataChanged.value =
+        currentNoteData.value.text !== note.value.text ||
+        currentNoteData.value.title !== note.value.title;
+    }
+  },
+  { immediate: true }
+);
 
 const closeButtonHandler = async (noteId: string) => {
   const updatedAt = Date.now().toString();
@@ -71,14 +82,16 @@ const closeButtonHandler = async (noteId: string) => {
   if (isNoteDataChanged.value) {
     await updateNoteById(note, noteId)
       .then(() => {
-        alert("note updated");
+        emit("showSuccessToast", "Note updated");
+        setTimeout(closeNoteDetail, 1000);
       })
       .catch((error) => {
-        console.error(error);
+        emit("showErrorToast", `Failed to add note ${error.message} `);
+        setTimeout(closeNoteDetail, 2000);
       });
+  } else {
+    closeNoteDetail();
   }
-
-  closeNoteDetail();
 };
 
 const deleteNoteHandler = async (noteId: string) => {
@@ -86,11 +99,12 @@ const deleteNoteHandler = async (noteId: string) => {
   if (deleteConfimation) {
     await deleteNoteById(noteId)
       .then(() => {
-        console.log("success");
-        closeNoteDetail();
+        emit("showSuccessToast", "Note deleted");
+        setTimeout(closeNoteDetail, 1000);
       })
       .catch((error) => {
-        console.log(error);
+        emit("showErrorToast", `Failed to delete note ${error.message} `);
+        setTimeout(closeNoteDetail, 2000);
       });
   }
 };
@@ -113,7 +127,9 @@ const resizeTextArea = () => {
         class="relative w-full max-w-[60%] max-h-full mx-auto"
         :class="{ open: showModal, close: !showModal }"
       >
-        <div class="relative p-3 rounded-lg max-h-[500px] overflow-y-scroll bg-white">
+        <div
+          class="relative p-3 rounded-lg max-h-[500px] overflow-y-scroll bg-white"
+        >
           <div class="absolute top-1 right-1">
             <button
               class="px-2 py-1 bg-slate-200 rounded-md"
@@ -127,7 +143,8 @@ const resizeTextArea = () => {
             </button>
           </div>
           <input
-            class="text-lg font-semibold block focus:outline-none"
+            class="text-2xl font-semibold block focus:outline-none w-full"
+            :placeholder="note.title ? '' : 'Title'"
             v-model="currentNoteData.title"
           />
           <textarea

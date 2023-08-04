@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ref, nextTick, onMounted, computed } from "vue";
+import { ref, nextTick, onMounted, computed, onBeforeMount } from "vue";
 import { nanoid } from "nanoid";
-import { TodoData } from "../../global/types";
 import { addTodo } from "../vuetils/useTodo";
 import { addTodoItem } from "../vuetils/useTodoItem";
 import { getUserSession } from "../vuetils/useAuth";
+import { showSuccessToast, showErrorToast } from "../vuetils/toast";
 
 const { showTodoForm } = defineProps(["showTodoForm"]);
 
@@ -14,15 +14,14 @@ const toggleTodoForm = () => {
   emit("updateShowTodoForm", !showTodoForm);
 };
 
-
-const userSession = ref()
+const userSession = ref();
 const fetchUserSession = async () => {
   userSession.value = await getUserSession();
 };
 
 const todoId: string = `todo-${nanoid(16)}`;
 
-const todoData = ref<TodoData>({
+const todoData = ref({
   id: todoId,
   title: "",
   created_at: Date.now().toString(),
@@ -35,7 +34,6 @@ const todoData = ref<TodoData>({
       todo_id: todoId,
     },
   ],
-  author: userSession.value.user.id
 });
 
 let currentIndex = ref<number>(0);
@@ -92,31 +90,34 @@ const onSubmitHandler = async () => {
         title: todoData.value.title,
         created_at: todoData.value.created_at,
         updated_at: todoData.value.updated_at,
+        author: userSession.value.user.id,
       });
 
       await addTodoItem(filteredTodoItems.value);
-    } catch (error) {
-      console.error(
-        "failed to add todo or todo item, here is the error:",
-        error
-      );
+      showSuccessToast("Todo added!");
+    } catch (error: any) {
+      showErrorToast(`Failed to add todo ${error.message}`);
+      console.log(error);
     }
   }
   toggleTodoForm();
 };
 
+onBeforeMount(async () => {
+  await fetchUserSession();
+});
+
 onMounted(async () => {
   if (showTodoForm) {
     inputRefs.value[0]?.focus();
   }
-  await fetchUserSession()
 });
 </script>
 
 <template>
   <section class="flex justify-center items-center my-5">
     <article
-      class="bg-white w-[576px] h-full rounded-lg shadow-lg font-open-sans pb-2"
+      class="bg-white min-w-[576px] max-w-[576px] h-full rounded-lg shadow-lg font-open-sans pb-2"
     >
       <input
         class="block w-full text-lg p-2 focus:outline-none my-2 text-slate-600 placeholder:text-slate-600"

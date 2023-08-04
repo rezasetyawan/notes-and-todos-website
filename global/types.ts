@@ -33,6 +33,7 @@ interface AddTodo {
     title?: string,
     created_at: string,
     updated_at: string,
+    author: string
 }
 
 interface UpdateTodo {
