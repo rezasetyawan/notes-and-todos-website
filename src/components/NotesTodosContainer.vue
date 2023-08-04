@@ -10,12 +10,14 @@ import TodoDetail from "./TodoDetail.vue";
 import { useRoute, useRouter } from "vue-router";
 import { getUserSession } from "../vuetils/useAuth";
 import { showSuccessToast, showErrorToast } from "../vuetils/toast";
+import ConfirmationModal from "./ConfirmationModal.vue";
 
 const route = useRoute();
 const router = useRouter();
 const showModal = ref<boolean>(false);
 
 const props = defineProps(["searchKeyword"]);
+const showConfirmationModal = ref<boolean>(false);
 
 const notes = ref<GetNote[]>([]);
 const todos = ref<GetTodo[]>([]);
@@ -82,7 +84,6 @@ watch(
   },
   { immediate: true }
 );
-
 </script>
 
 <template>
@@ -98,29 +99,43 @@ watch(
       </div>
 
       <div v-for="todo in filteredTodos" :key="todo.id">
-        <TodoContainer
-          :todo="todo"
-          @openModal="showModal = true"
-        ></TodoContainer>
+        <TodoContainer :todo="todo" @openModal="showModal = true" />
       </div>
     </article>
 
     <NoteDetail
       :showModal="showModal"
       @closeNoteDetail="showModal = false"
-      @showSuccessToast = "(message) => showSuccessToast(message)"
-      @showErrorToast = "(message) => showErrorToast(message)"
+      @showSuccessToast="(message) => showSuccessToast(message)"
+      @showErrorToast="(message) => showErrorToast(message)"
+      @noteUpdate="
+        async () => {
+          notes = await getNotes(userSession.user.id);
+          console.log('update note');
+          console.log(notes);
+        }
+      "
     />
 
     <TodoDetail
       :showModal="showModal"
       @closeTodoDetail="showModal = false"
-      @showSuccessToast = "(message) => showSuccessToast(message)"
-      @showErrorToast = "(message) => showErrorToast(message)"
+      @showSuccessToast="(message) => showSuccessToast(message)"
+      @showErrorToast="(message) => showErrorToast(message)"
+      @todoUpdate="
+        async () => {
+          todos = await getTodos(userSession.user.id);
+        }
+      "
     />
 
     <h3
-      v-if="!filteredNotes.length && !filteredTodos.length && notes.length && todos.length"
+      v-if="
+        !filteredNotes.length &&
+        !filteredTodos.length &&
+        notes.length &&
+        todos.length
+      "
       class="text-lg text-center my-5"
     >
       Not Found
@@ -130,4 +145,7 @@ watch(
       You dont have any notes
     </h3>
   </section>
+  <ConfirmationModal
+    :showConfirmationModal="showConfirmationModal"
+  ></ConfirmationModal>
 </template>

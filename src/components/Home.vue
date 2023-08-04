@@ -7,6 +7,7 @@ import NotesTodosContainer from "./NotesTodosContainer.vue";
 import { onBeforeMount, ref } from "vue";
 import { useRouter } from "vue-router";
 import { getUserSession } from "../vuetils/useAuth";
+// import ConfirmationModal from "./ConfirmationModal.vue";
 
 const router = useRouter();
 const userSession = ref();
@@ -15,6 +16,8 @@ const userSession = ref();
 const showNoteForm = ref<boolean>(false);
 const showTodoForm = ref<boolean>(false);
 const searchKeyword = ref<string>("");
+
+// const showConfirmationModal = ref<boolean>(true)
 
 interface NoteData {
   title?: string;
@@ -72,5 +75,7 @@ const updateShowTodoForm = (showForm: boolean) => {
         <NotesTodosContainer :searchKeyword="searchKeyword" />
       </Suspense>
     </section>
+    tas tas
+    <!-- <ConfirmationModal :showConfirmationModal="showConfirmationModal"></ConfirmationModal> -->
   </main>
 </template>

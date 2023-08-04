@@ -24,6 +24,7 @@ const emit = defineEmits([
   "todoNotFound",
   "showSuccessToast",
   "showErrorToast",
+  "todoUpdate"
 ]);
 
 const closeTodoDetail = () => {
@@ -201,6 +202,7 @@ const closeButtonHandler = async () => {
 
       if (newTodoItems.length || updatedTodoItems.length || newTodoItems.length) {
         emit("showSuccessToast", "Todo updated");
+        emit("todoUpdate")
         setTimeout(closeTodoDetail, 1000);
       } else {
         closeTodoDetail()

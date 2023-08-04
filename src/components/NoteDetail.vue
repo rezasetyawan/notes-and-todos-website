@@ -12,6 +12,7 @@ const emit = defineEmits([
   "noteNotFound",
   "showSuccessToast",
   "showErrorToast",
+  "noteUpdate"
 ]);
 
 const router = useRouter();
@@ -83,6 +84,7 @@ const closeButtonHandler = async (noteId: string) => {
     await updateNoteById(note, noteId)
       .then(() => {
         emit("showSuccessToast", "Note updated");
+        emit("noteUpdate")
         setTimeout(closeNoteDetail, 1000);
       })
       .catch((error) => {
