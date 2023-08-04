@@ -1,7 +1,12 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+const { bgColor } = defineProps({
+    bgColor: String
+});
+</script>
 <template>
   <div
-    class="fixed text-center w-full h-screen mx-auto flex items-center justify-center bg-black/60"
+    class="fixed text-center w-full h-screen mx-auto flex items-center justify-center"
+    :class="bgColor ? bgColor : 'bg-black/60'"
   >
     <div
       role="status"

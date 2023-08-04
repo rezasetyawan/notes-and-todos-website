@@ -2,6 +2,9 @@
 import { computed, ref, onMounted, watch, onBeforeMount } from "vue";
 import { GetNote, GetTodo } from "../../global/types";
 import { getNotes } from "../vuetils/useNote";
+import AddItem from "./AddItem.vue";
+import AddNoteForm from "./AddNoteForm.vue";
+import AddTodoForm from "./AddTodoForm.vue";
 import NoteItem from "./NoteItem.vue";
 import NoteDetail from "./NoteDetail.vue";
 import { getTodos } from "../vuetils/useTodo";
@@ -15,9 +18,20 @@ import ConfirmationModal from "./ConfirmationModal.vue";
 const route = useRoute();
 const router = useRouter();
 const showModal = ref<boolean>(false);
+const showNoteForm = ref<boolean>(false);
+const showTodoForm = ref<boolean>(false);
 
 const props = defineProps(["searchKeyword"]);
 const showConfirmationModal = ref<boolean>(false);
+
+interface NoteData {
+  title?: string;
+  text: string;
+}
+const noteData = ref<NoteData>({
+  title: "",
+  text: "",
+});
 
 const notes = ref<GetNote[]>([]);
 const todos = ref<GetTodo[]>([]);
@@ -84,9 +98,52 @@ watch(
   },
   { immediate: true }
 );
+
+const updateShowNoteForm = (showForm: boolean) => {
+  showNoteForm.value = showForm;
+};
+
+const updateShowTodoForm = (showForm: boolean) => {
+  showTodoForm.value = showForm;
+};
 </script>
 
 <template>
+  <section>
+    <AddNoteForm
+      v-if="showNoteForm"
+      :showNoteForm="showNoteForm"
+      @updateShowNoteForm="updateShowNoteForm"
+      :noteData="noteData"
+      @addTodo="
+        async () => {
+          notes = await getNotes(userSession.user.id);
+          console.log('update note');
+          console.log(notes);
+        }
+      "
+    />
+    <AddTodoForm
+      v-else-if="showTodoForm"
+      :showTodoForm="showTodoForm"
+      @updateShowTodoForm="updateShowTodoForm"
+      @addTodo="
+        async () => {
+          todos = await getTodos(userSession.user.id);
+        }
+      "
+    />
+
+    <AddItem
+      v-else
+      :showNoteForm="showNoteForm"
+      @updateShowNoteForm="updateShowNoteForm"
+      :noteData="noteData"
+      :showTodoForm="showTodoForm"
+      @updateShowTodoForm="updateShowTodoForm"
+    />
+  </section>
+  
   <section class="relative">
     <h3 v-if="loading" class="text-center my-5">Loading...</h3>
 

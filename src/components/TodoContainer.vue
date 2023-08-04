@@ -46,17 +46,17 @@ const redirectToDetail = (name: string, id: string) => {
     </h3>
     <article class="line-clamp-[10]">
       <div v-for="(todoItem, index) in todo.todo_items" :key="index">
-        <div v-if="!todoItem.is_complete" class="my-2 w-full">
+        <div v-if="!todoItem.is_complete" class="my-2 w-full flex">
           <input
             type="checkbox"
             v-model="todoItem.is_complete"
-            class="mr-2"
+            class="mr-2 block"
             @click="
               onChangeTodoStatusHandler(todoItem.id, todoItem.is_complete)
             "
           />
           <span
-            class="inline-block min-w-[80%]"
+            class="block min-w-[80%]"
             :class="{ 'line-through': todoItem.is_complete }"
             @click="
               () => {
@@ -71,17 +71,17 @@ const redirectToDetail = (name: string, id: string) => {
     <hr />
     <article class="line-clamp-5">
       <div v-for="(todoItem, index) in todo.todo_items" :key="index">
-        <div v-if="todoItem.is_complete" class="my-2">
+        <div v-if="todoItem.is_complete" class="my-2 flex">
           <input
             type="checkbox"
-            class="mr-2"
+            class="mr-2 block"
             v-model="todoItem.is_complete"
             @click="
               onChangeTodoStatusHandler(todoItem.id, todoItem.is_complete)
             "
           />
           <span
-            class="inline-block min-w-[80%] text-gray-500"
+            class="block min-w-[80%] text-gray-500"
             :class="{ 'line-through': todoItem.is_complete }"
             @click="
               () => {

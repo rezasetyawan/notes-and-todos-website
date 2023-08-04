@@ -8,7 +8,7 @@ import { showSuccessToast, showErrorToast } from "../vuetils/toast";
 
 const { showTodoForm } = defineProps(["showTodoForm"]);
 
-const emit = defineEmits(["updateShowTodoForm"]);
+const emit = defineEmits(["updateShowTodoForm","addTodo"]);
 
 const toggleTodoForm = () => {
   emit("updateShowTodoForm", !showTodoForm);
@@ -95,6 +95,7 @@ const onSubmitHandler = async () => {
 
       await addTodoItem(filteredTodoItems.value);
       showSuccessToast("Todo added!");
+      emit("addTodo")
     } catch (error: any) {
       showErrorToast(`Failed to add todo ${error.message}`);
       console.log(error);

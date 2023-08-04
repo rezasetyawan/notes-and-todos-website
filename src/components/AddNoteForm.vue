@@ -6,8 +6,9 @@ import { AddNote } from "../../global/types";
 import { getUserSession } from "../vuetils/useAuth";
 import { showSuccessToast, showErrorToast } from "../vuetils/toast";
 
+
 const { showNoteForm, noteData } = defineProps(["showNoteForm", "noteData"]);
-const emit = defineEmits(["updateShowNoteForm", "firstInput"]);
+const emit = defineEmits(["updateShowNoteForm", "firstInput","addTodo"]);
 
 const textAreaRef = ref<HTMLTextAreaElement | null>(null);
 
@@ -41,6 +42,7 @@ const onSubmitHandler = async () => {
       .then(() => {
         resetForm();
         showSuccessToast("Note added !");
+        emit("addTodo")
       })
       .catch((error) => {
         showErrorToast(`Failed to add note ${error.message}`);
@@ -89,6 +91,7 @@ onMounted(async () => {
       </button>
     </form>
   </section>
+  
 </template>
 
 <style scoped>
