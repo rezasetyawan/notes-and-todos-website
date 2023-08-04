@@ -6,9 +6,8 @@ import { AddNote } from "../../global/types";
 import { getUserSession } from "../vuetils/useAuth";
 import { showSuccessToast, showErrorToast } from "../vuetils/toast";
 
-
 const { showNoteForm, noteData } = defineProps(["showNoteForm", "noteData"]);
-const emit = defineEmits(["updateShowNoteForm", "firstInput","addTodo"]);
+const emit = defineEmits(["updateShowNoteForm", "firstInput", "addTodo"]);
 
 const textAreaRef = ref<HTMLTextAreaElement | null>(null);
 
@@ -42,7 +41,7 @@ const onSubmitHandler = async () => {
       .then(() => {
         resetForm();
         showSuccessToast("Note added !");
-        emit("addTodo")
+        emit("addTodo");
       })
       .catch((error) => {
         showErrorToast(`Failed to add note ${error.message}`);
@@ -75,23 +74,22 @@ onMounted(async () => {
     >
       <input
         v-model="noteData.title"
-        class="block w-full text-lg focus:outline-none p-1 my-2 text-slate-600 placeholder:text-slate-600"
+        class="block w-full text-lg focus:outline-none p-1 my-2 text-slate-700 placeholder:text-slate-600"
         placeholder="Title"
       />
       <textarea
         v-model="noteData.text"
-        class="block w-full focus:outline-none p-1 my-2 text-slate-600 placeholder:text-slate-600"
+        class="block w-full focus:outline-none p-1 my-2 text-slate-900 placeholder:text-slate-600"
         placeholder="Write your note here"
         spellcheck="false"
         ref="textAreaRef"
         @input="resizeTextArea"
       ></textarea>
       <button type="submit" class="px-2 py-1 font-semibold float-right">
-        Close
+        Save
       </button>
     </form>
   </section>
-  
 </template>
 
 <style scoped>

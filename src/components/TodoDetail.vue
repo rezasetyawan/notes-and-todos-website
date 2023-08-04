@@ -1,13 +1,8 @@
 <script setup lang="ts">
-import ConfirmationModal from "./ConfirmationModal.vue";
 import { useRoute, useRouter } from "vue-router";
 import { GetTodo, GetTodoItem } from "../../global/types";
 import { computed, nextTick, onMounted, ref, watch } from "vue";
-import {
-  getTodoById,
-  updateTodoById,
-  deleteTodoById,
-} from "../vuetils/useTodo";
+import { getTodoById, updateTodoById } from "../vuetils/useTodo";
 import { nanoid } from "nanoid";
 import {
   addTodoItem,
@@ -24,7 +19,7 @@ const emit = defineEmits([
   "todoNotFound",
   "showSuccessToast",
   "showErrorToast",
-  "todoUpdate"
+  "todoUpdate",
 ]);
 
 const closeTodoDetail = () => {
@@ -65,6 +60,7 @@ const fetchTodoData = async () => {
 const currentActiveTodoItems = ref<GetTodoItem[]>([]);
 const currentIndex = ref<number>(currentActiveTodoItems.value.length - 1);
 const inputRefs = ref<HTMLInputElement[]>([]);
+const isTodoDataChanged = ref<boolean>(false);
 
 const addTodoItemInputElement = () => {
   currentIndex.value += 1;
@@ -200,35 +196,21 @@ const closeButtonHandler = async () => {
         await addTodoItem(newTodoItems);
       }
 
-      if (newTodoItems.length || updatedTodoItems.length || newTodoItems.length) {
+      if (
+        isTodoDataChanged.value
+      ) {
         emit("showSuccessToast", "Todo updated");
-        emit("todoUpdate")
+        emit("todoUpdate");
         setTimeout(closeTodoDetail, 1000);
       } else {
-        closeTodoDetail()
+        closeTodoDetail();
       }
-      
     } catch (error: any) {
       emit(
         "showErrorToast",
         `Failed to update todo ${error.message ? error.message : error}`
       );
     }
-  }
-};
-
-const deleteTodoHandler = async (todoId: string) => {
-  const deleteConfimation = confirm("are your sure want to delete this todo");
-  if (deleteConfimation) {
-    await deleteTodoById(todoId)
-      .then(() => {
-        emit("showSuccessToast", "Todo deleted");
-        setTimeout(closeTodoDetail, 1000);
-      })
-      .catch((error) => {
-        emit("showErrorToast", `Failed to delete todo ${error.message} `);
-        setTimeout(closeTodoDetail, 2000);
-      });
   }
 };
 
@@ -243,6 +225,14 @@ const deleteTodoItem = async (todoItemId: string) => {
     console.error(error);
   }
 };
+
+watch(
+  currentTodoData,
+  (newValue) => {
+    isTodoDataChanged.value = JSON.stringify(newValue) !== JSON.stringify(todo.value);
+  },
+  { deep: true, immediate: true }
+);
 
 onMounted(async () => {
   fetchTodoData();
@@ -270,20 +260,8 @@ onMounted(async () => {
         :class="{ open: showModal, close: !showModal }"
       >
         <div
-          class="p-3 min-w-[500px] max-h-[500px] overflow-scroll relative bg-white rounded-md"
+          class="p-3 min-w-[500px] max-h-[500px] overflow-y-scroll relative bg-white rounded-md"
         >
-          <div class="absolute top-1 right-1">
-            <button
-              class="px-2 py-1 bg-slate-200 rounded-md"
-              @click="
-                () => {
-                  deleteTodoHandler(currentTodoData.id);
-                }
-              "
-            >
-              delete
-            </button>
-          </div>
           <input
             class="text-2xl font-semibold block focus:outline-none w-full"
             :placeholder="todo.title ? '' : 'Title'"
@@ -301,7 +279,7 @@ onMounted(async () => {
               <input
                 type="checkbox"
                 v-model="todoItem.is_complete"
-                class="block h-5 w-5"
+                class="block h-5 w-5 accent-accent-color2"
               />
               <input
                 class="block p-1 w-[90%] focus:outline-none"
@@ -328,7 +306,6 @@ onMounted(async () => {
 
           <hr />
 
-          <!-- UNFINISHED TODO LIST -->
           <div
             v-for="(todoItem, index) in currentTodoData.todo_items"
             :key="index"
@@ -340,7 +317,7 @@ onMounted(async () => {
               <input
                 type="checkbox"
                 v-model="todoItem.is_complete"
-                class="block h-5 w-5"
+                class="block h-5 w-5 accent-accent-color2"
               />
               <input
                 class="block p-1 w-[90%] focus:outline-none"
@@ -363,13 +340,12 @@ onMounted(async () => {
             class="px-2 py-1 bg-slate-100 rounded-lg"
             @click="closeButtonHandler"
           >
-            Close
+            {{ isTodoDataChanged ? "Update" : "Close" }}
           </button>
         </div>
         <div v-if="!todo">Loading...</div>
       </div>
     </div>
-    <ConfirmationModal></ConfirmationModal>
   </section>
 </template>
 

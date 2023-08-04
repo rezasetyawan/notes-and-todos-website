@@ -1,19 +1,19 @@
 <script setup lang="ts">
-import { computed, ref, onMounted, watch, onBeforeMount } from "vue";
-import { GetNote, GetTodo } from "../../global/types";
-import { getNotes } from "../vuetils/useNote";
 import AddItem from "./AddItem.vue";
 import AddNoteForm from "./AddNoteForm.vue";
 import AddTodoForm from "./AddTodoForm.vue";
 import NoteItem from "./NoteItem.vue";
 import NoteDetail from "./NoteDetail.vue";
-import { getTodos } from "../vuetils/useTodo";
 import TodoContainer from "./TodoContainer.vue";
 import TodoDetail from "./TodoDetail.vue";
+import ConfirmationModal from "./ConfirmationModal.vue";
+import { computed, ref, onMounted, watch, onBeforeMount } from "vue";
+import { GetNote, GetTodo } from "../../global/types";
+import { deleteNoteById, getNotes } from "../vuetils/useNote";
+import { deleteTodoById, getTodos } from "../vuetils/useTodo";
 import { useRoute, useRouter } from "vue-router";
 import { getUserSession } from "../vuetils/useAuth";
 import { showSuccessToast, showErrorToast } from "../vuetils/toast";
-import ConfirmationModal from "./ConfirmationModal.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -21,8 +21,11 @@ const showModal = ref<boolean>(false);
 const showNoteForm = ref<boolean>(false);
 const showTodoForm = ref<boolean>(false);
 
+const deleteDataFunction = ref<Function>(() => {});
+
 const props = defineProps(["searchKeyword"]);
 const showConfirmationModal = ref<boolean>(false);
+let modalMessage: string;
 
 interface NoteData {
   title?: string;
@@ -36,8 +39,8 @@ const noteData = ref<NoteData>({
 const notes = ref<GetNote[]>([]);
 const todos = ref<GetTodo[]>([]);
 const loading = ref<boolean>(true);
-
 const userSession = ref();
+
 userSession.value = await getUserSession();
 
 onBeforeMount(async () => {
@@ -106,6 +109,37 @@ const updateShowNoteForm = (showForm: boolean) => {
 const updateShowTodoForm = (showForm: boolean) => {
   showTodoForm.value = showForm;
 };
+
+const onDeleteNoteHandler = (noteId: string, noteTitle: string) => {
+  deleteDataFunction.value = async () => {
+    await deleteNoteById(noteId)
+      .then(() => {
+        router.replace({ path: "/" });
+        showSuccessToast("Note deleted");
+      })
+      .catch((error) => showErrorToast(error.message));
+
+    notes.value = await getNotes(userSession.value.user.id);
+  };
+  modalMessage = `Are you sure want to delete "${noteTitle}" ?`;
+  showConfirmationModal.value = true;
+};
+
+const onDeleteTodoHandler = (todoId: string, todoTitle: string) => {
+  deleteDataFunction.value = async () => {
+    await deleteTodoById(todoId)
+      .then(() => {
+        router.replace({ path: "/" });
+        showSuccessToast("Note deleted");
+      })
+      .catch((error) => showErrorToast(error.message));
+
+    todos.value = await getTodos(userSession.value.user.id);
+  };
+
+  modalMessage = `Are you sure want to delete "${todoTitle}" ?`;
+  showConfirmationModal.value = true;
+};
 </script>
 
 <template>
@@ -143,7 +177,7 @@ const updateShowTodoForm = (showForm: boolean) => {
       @updateShowTodoForm="updateShowTodoForm"
     />
   </section>
-  
+
   <section class="relative">
     <h3 v-if="loading" class="text-center my-5">Loading...</h3>
 
@@ -152,11 +186,25 @@ const updateShowTodoForm = (showForm: boolean) => {
       class="gap-2 columns-1 space-y-2 md:columns-3 lg:columns-4"
     >
       <div v-for="(note, index) in filteredNotes" :key="index">
-        <NoteItem :note="note" @openModal="showModal = true" />
+        <NoteItem
+          :note="note"
+          @openModal="showModal = true"
+          @deleteNote="
+            (noteId, noteTitle) => onDeleteNoteHandler(noteId, noteTitle)
+          "
+        />
       </div>
 
       <div v-for="todo in filteredTodos" :key="todo.id">
-        <TodoContainer :todo="todo" @openModal="showModal = true" />
+        <TodoContainer
+          :todo="todo"
+          @openModal="showModal = true"
+          @deleteTodo="
+            (todoId, todoTitle) => {
+              onDeleteTodoHandler(todoId, todoTitle);
+            }
+          "
+        />
       </div>
     </article>
 
@@ -204,5 +252,8 @@ const updateShowTodoForm = (showForm: boolean) => {
   </section>
   <ConfirmationModal
     :showConfirmationModal="showConfirmationModal"
-  ></ConfirmationModal>
+    :actionFunction="deleteDataFunction"
+    @closeModal="showConfirmationModal = false"
+    >{{ modalMessage }}</ConfirmationModal
+  >
 </template>

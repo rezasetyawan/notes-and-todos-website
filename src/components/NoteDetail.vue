@@ -3,7 +3,7 @@ import { ref, onMounted, watch, nextTick } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { getNoteById } from "../vuetils/useNote";
 import { formatTimestampWithTimeZone } from "../helper/formateDate";
-import { updateNoteById, deleteNoteById } from "../vuetils/useNote";
+import { updateNoteById } from "../vuetils/useNote";
 import type { GetNote } from "../../global/types";
 
 const { showModal } = defineProps(["showModal"]);
@@ -12,7 +12,7 @@ const emit = defineEmits([
   "noteNotFound",
   "showSuccessToast",
   "showErrorToast",
-  "noteUpdate"
+  "noteUpdate",
 ]);
 
 const router = useRouter();
@@ -84,7 +84,7 @@ const closeButtonHandler = async (noteId: string) => {
     await updateNoteById(note, noteId)
       .then(() => {
         emit("showSuccessToast", "Note updated");
-        emit("noteUpdate")
+        emit("noteUpdate");
         setTimeout(closeNoteDetail, 1000);
       })
       .catch((error) => {
@@ -93,21 +93,6 @@ const closeButtonHandler = async (noteId: string) => {
       });
   } else {
     closeNoteDetail();
-  }
-};
-
-const deleteNoteHandler = async (noteId: string) => {
-  const deleteConfimation = confirm("are your sure want to delete this note");
-  if (deleteConfimation) {
-    await deleteNoteById(noteId)
-      .then(() => {
-        emit("showSuccessToast", "Note deleted");
-        setTimeout(closeNoteDetail, 1000);
-      })
-      .catch((error) => {
-        emit("showErrorToast", `Failed to delete note ${error.message} `);
-        setTimeout(closeNoteDetail, 2000);
-      });
   }
 };
 
@@ -132,18 +117,6 @@ const resizeTextArea = () => {
         <div
           class="relative p-3 rounded-lg max-h-[500px] overflow-y-scroll bg-white"
         >
-          <div class="absolute top-1 right-1">
-            <button
-              class="px-2 py-1 bg-slate-200 rounded-md"
-              @click="
-                () => {
-                  deleteNoteHandler(noteId);
-                }
-              "
-            >
-              delete
-            </button>
-          </div>
           <input
             class="text-2xl font-semibold block focus:outline-none w-full"
             :placeholder="note.title ? '' : 'Title'"
@@ -168,7 +141,7 @@ const resizeTextArea = () => {
               }
             "
           >
-            close
+            {{ isNoteDataChanged ? 'Update' : 'Close' }}
           </button>
         </div>
         <div v-if="!note">Loading...</div>
