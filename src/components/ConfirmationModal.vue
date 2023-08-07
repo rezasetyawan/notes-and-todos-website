@@ -14,7 +14,7 @@ const closeModal = () => {
   <section v-if="showConfirmationModal">
     <div
       tabindex="-1"
-      class="fixed top-0 left-0 right-0 z-[100] w-full overflow-hidden h-screen p-5 bg-black/80 flex items-center"
+      class="fixed top-0 left-0 right-0 z-[100] w-full overflow-hidden h-screen p-5 bg-black/80 flex items-center font-poppins"
     >
       <div
         class="relative w-full max-w-sm max-h-full mx-auto"

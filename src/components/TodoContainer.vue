@@ -36,7 +36,7 @@ const redirectToDetail = (name: string, id: string) => {
 </script>
 <template>
   <div
-    class="p-3 border-2 border-slate-600 rounded-lg break-inside-avoid relative"
+    class="p-3 border-2 border-slate-600 rounded-lg break-inside-avoid relative select-none"
   >
     <button class="absolute top-2 right-2" @click="deleteTodoHandler()">
       <svg

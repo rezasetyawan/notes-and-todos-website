@@ -30,7 +30,7 @@ const signOutUserHandler = async () => {
     <section
       class="flex justify-between items-center gap-3 p-4 px-2 sm:px-4 sm:grid sm:grid-cols-3 sm:place-items-center sm:justify-items-center "
     >
-      <h1 class="font-semibold justify-self-start text-slate-600 font-poppins text-xl sm:text-3xl">
+      <h1 class="font-semibold justify-self-start text-slate-600 font-poppins text-xl sm:text-3xl" @click="$router.replace({path:'/home'})">
         Scribblr
       </h1>
 
