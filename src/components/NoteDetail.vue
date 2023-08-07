@@ -22,7 +22,7 @@ const noteId = ref<string>(route.params.id as string);
 
 const closeNoteDetail = () => {
   emit("closeNoteDetail");
-  router.replace({path: '/'});
+  router.replace({ path: "/" });
 };
 
 const textAreaRef = ref<HTMLTextAreaElement | null>(null);
@@ -41,10 +41,15 @@ const fetchNoteData = async () => {
     currentNoteData.value.title = note.value.title || "";
     currentNoteData.value.text = note.value.text || "";
   }
-  nextTick(() => {
-    textAreaRef.value?.focus();
-    resizeTextArea();
-  });
+
+  const isDesktop = window.innerWidth >= 1025;
+
+  if (isDesktop) {
+    nextTick(() => {
+      textAreaRef.value?.focus();
+    });
+  }
+  nextTick(() => resizeTextArea());
 };
 
 onMounted(() => {
@@ -131,7 +136,6 @@ const resizeTextArea = () => {
           ></textarea>
 
           <div class="flex items-center justify-between">
-            
             <button
               class="px-2 py-1 bg-slate-100 rounded-lg"
               @click="
@@ -166,26 +170,25 @@ textarea::selection {
   color: white;
 }
 
-  @keyframes fadeup {
-    from {
-      opacity: 0;
-      top: -5%;
-    }
-    to {
-      opacity: 1;
-      top: 0%;
-    }
+@keyframes fadeup {
+  from {
+    opacity: 0;
+    top: -5%;
   }
-
-  @keyframes fadedown {
-    from {
-      opacity: 1;
-      top: 0%;
-    }
-    to {
-      opacity: 0;
-      top: -5%;
-    }
+  to {
+    opacity: 1;
+    top: 0%;
   }
+}
 
+@keyframes fadedown {
+  from {
+    opacity: 1;
+    top: 0%;
+  }
+  to {
+    opacity: 0;
+    top: -5%;
+  }
+}
 </style>

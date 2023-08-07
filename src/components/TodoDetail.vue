@@ -25,8 +25,7 @@ const emit = defineEmits([
 
 const closeTodoDetail = () => {
   emit("closeTodoDetail");
-  router.replace({path: '/'});
-  
+  router.replace({ path: "/" });
 };
 
 const todoId = ref<string>(route.params.id as string);
@@ -78,9 +77,13 @@ const fetchTodoData = async () => {
     }
   }
 
-  nextTick(() => {
-    inputRefs.value[inputRefs.value.length - 1]?.focus();
-  });
+  const isDesktop = window.innerWidth >= 1025;
+
+  if (isDesktop) {
+    nextTick(() => {
+      inputRefs.value[inputRefs.value.length - 1]?.focus();
+    });
+  }
 };
 
 const currentActiveTodoItems = ref<GetTodoItem[]>([]);
@@ -218,7 +221,6 @@ const closeButtonHandler = async () => {
       if (newTodoItems.length) {
         await addTodoItem(newTodoItems);
       }
-
 
       if (isTodoDataChanged.value) {
         emit("showSuccessToast", "Todo updated");
