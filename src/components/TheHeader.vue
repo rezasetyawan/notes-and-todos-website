@@ -28,15 +28,15 @@ const signOutUserHandler = async () => {
   <ConfirmationModal :showConfirmationModal="showConfimationModal" :actionFunction="signOutUserHandler" @closeModal="showConfimationModal = false">Are you sure want to sign out?</ConfirmationModal>
   <header class="bg-white shadow-lg sticky top-0" :class="{'z-[100]':!showConfimationModal}" >
     <section
-      class="grid grid-cols-3 place-items-center justify-items-center p-4"
+      class="flex justify-between items-center gap-3 p-4 px-2 sm:px-4 sm:grid sm:grid-cols-3 sm:place-items-center sm:justify-items-center "
     >
-      <h1 class="text-3xl font-semibold justify-self-start text-slate-600 font-poppins">
+      <h1 class="font-semibold justify-self-start text-slate-600 font-poppins text-xl sm:text-3xl">
         Scribblr
       </h1>
 
       <input
         v-model="localSearchKey"
-        class="focus:outline-none p-3 py-3 w-full bg-accent-color1 rounded-lg"
+        class="focus:outline-none w-full bg-accent-color1 rounded-lg text-sm p-1.5 sm:p-3 sm:text-base"
         placeholder="Search your notes"
         @input="onInputKeywordHandler"
       />

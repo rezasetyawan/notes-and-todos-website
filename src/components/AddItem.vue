@@ -21,7 +21,7 @@ const triggerTodoForm = () => {
 </script>
 <template>
   <section class="flex justify-center items-center my-5">
-    <div class="p-2 shadow-xl rounded-lg w-[576px] flex justify-between">
+    <div class="p-2 shadow-xl rounded-lg flex justify-between min-w-[90%] sm:min-w-[70%] lg:min-w-[50%]">
       <input
         placeholder="Add note..."
         v-model="noteData.text"

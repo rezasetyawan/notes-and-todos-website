@@ -111,38 +111,42 @@ const resizeTextArea = () => {
       class="fixed top-0 left-0 right-0 z-[100] w-full overflow-hidden h-screen bg-black/80 flex items-center justify-center"
     >
       <div
-        class="relative w-full max-w-[60%] max-h-full mx-auto"
+        class="relative w-full max-h-full mx-auto max-w-[90%] sm:max-w-[60%]"
         :class="{ open: showModal, close: !showModal }"
       >
         <div
-          class="relative p-3 rounded-lg max-h-[500px] overflow-y-scroll bg-white"
+          class="relative p-2 rounded-lg max-h-[500px] overflow-y-scroll bg-white sm:p-3"
         >
           <input
-            class="text-2xl font-semibold block focus:outline-none w-full"
+            class="font-semibold block focus:outline-none w-full text-xl sm:text-2xl"
             :placeholder="note.title ? '' : 'Title'"
             v-model="currentNoteData.title"
           />
           <textarea
-            class="my-5 block focus:outline-none w-full h-full p-1"
+            class="my-2 block focus:outline-none w-full h-full p-1 resize-none sm:my-5 max-sm:text-sm"
             spellcheck="false"
             v-model="currentNoteData.text"
             ref="textAreaRef"
             @input="resizeTextArea"
           ></textarea>
-          <p class="float-right text-sm font-medium">
-            updated at:
-            {{ formatTimestampWithTimeZone(note.updated_at, "Asia/Jakarta") }}
-          </p>
-          <button
-            class="px-2 py-1 bg-slate-100 rounded-lg"
-            @click="
-              () => {
-                closeButtonHandler(noteId);
-              }
-            "
-          >
-            {{ isNoteDataChanged ? 'Update' : 'Close' }}
-          </button>
+
+          <div class="flex items-center justify-between">
+            
+            <button
+              class="px-2 py-1 bg-slate-100 rounded-lg"
+              @click="
+                () => {
+                  closeButtonHandler(noteId);
+                }
+              "
+            >
+              {{ isNoteDataChanged ? "Update" : "Close" }}
+            </button>
+            <p class="float-right font-medium text-xs sm:text-sm">
+              Updated at:
+              {{ formatTimestampWithTimeZone(note.updated_at, "Asia/Jakarta") }}
+            </p>
+          </div>
         </div>
         <div v-if="!note">Loading...</div>
       </div>
@@ -162,29 +166,6 @@ textarea::selection {
   color: white;
 }
 
-@keyframes fadedown {
-  from {
-    opacity: 1;
-    top: 30%;
-  }
-  to {
-    opacity: 0;
-    top: 35%;
-  }
-}
-
-@keyframes fadeup {
-  from {
-    opacity: 0;
-    top: 35%;
-  }
-  to {
-    opacity: 1;
-    top: 30%;
-  }
-}
-
-@media screen and (min-width: 768px) {
   @keyframes fadeup {
     from {
       opacity: 0;
@@ -206,5 +187,5 @@ textarea::selection {
       top: -5%;
     }
   }
-}
+
 </style>

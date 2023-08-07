@@ -50,7 +50,7 @@ const redirectToDetail = (name: string, id: string) => {
       </svg>
     </button>
     <h3
-      class="text-lg font-semibold w-full"
+      class="font-semibold max-w-[90%] sm:text-lg"
       @click="
         () => {
           redirectToDetail('todo', todo.id);
@@ -62,17 +62,17 @@ const redirectToDetail = (name: string, id: string) => {
     </h3>
     <article class="line-clamp-[10]">
       <div v-for="(todoItem, index) in todo.todo_items" :key="index">
-        <div v-if="!todoItem.is_complete" class="my-2 w-full flex">
+        <div v-if="!todoItem.is_complete" class="my-2 w-full">
           <input
             type="checkbox"
             v-model="todoItem.is_complete"
-            class="mr-2 block accent-accent-color2"
+            class="mr-2 inline-block accent-accent-color2"
             @click="
               onChangeTodoStatusHandler(todoItem.id, todoItem.is_complete)
             "
           />
           <span
-            class="block min-w-[80%]"
+            class="inline min-w-[80%] max-sm:text-sm"
             :class="{ 'line-through': todoItem.is_complete }"
             @click="
               () => {
@@ -87,17 +87,17 @@ const redirectToDetail = (name: string, id: string) => {
     <hr />
     <article class="line-clamp-5">
       <div v-for="(todoItem, index) in todo.todo_items" :key="index">
-        <div v-if="todoItem.is_complete" class="my-2 flex">
+        <div v-if="todoItem.is_complete" class="my-2">
           <input
             type="checkbox"
-            class="mr-2 block accent-accent-color2 p-1"
+            class="mr-2 inline-block accent-accent-color2 p-1"
             v-model="todoItem.is_complete"
             @click="
               onChangeTodoStatusHandler(todoItem.id, todoItem.is_complete)
             "
           />
           <span
-            class="block min-w-[80%] text-gray-500"
+            class="inline min-w-[80%] text-gray-500 max-sm:text-sm"
             :class="{ 'line-through': todoItem.is_complete }"
             @click="
               () => {

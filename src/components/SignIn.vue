@@ -9,13 +9,13 @@ const router = useRouter();
 const isPasswordVisible = ref<boolean>(false);
 const userData = ref<User>({ email: "", password: "" });
 const isOnProgess = ref<boolean>(false);
-const errorMessage = ref<string>("")
+const errorMessage = ref<string>("");
 
-const userSession = ref()
+const userSession = ref();
 
 onBeforeMount(async () => {
   userSession.value = await getUserSession();
-  console.log(userSession.value)
+  console.log(userSession.value);
   if (userSession.value) {
     router.push("/");
   }
@@ -24,13 +24,15 @@ onBeforeMount(async () => {
 const onSubmitHandler = async () => {
   try {
     isOnProgess.value = true;
-    await signInUser(userData.value).then(() => {
-      isOnProgess.value = false;
-      router.push("/");
-    }).catch((error) => {
-      isOnProgess.value = false;
-      errorMessage.value = error.message
-    });
+    await signInUser(userData.value)
+      .then(() => {
+        isOnProgess.value = false;
+        router.push("/");
+      })
+      .catch((error) => {
+        isOnProgess.value = false;
+        errorMessage.value = error.message;
+      });
   } catch (error) {
     console.error(error);
   }
@@ -41,11 +43,13 @@ const onSubmitHandler = async () => {
     class="box-border flex justify-center items-center text-center bg-gray-50 h-screen"
   >
     <form
-      class="min-w-[90%] sm:min-w-[400px] font-poppins relative"
+      class="min-w-[90%] sm:min-w-[60%] lg:min-w-[30%] font-poppins relative"
       @submit.prevent="onSubmitHandler"
     >
       <h2 class="text-3xl font-bold my-16">Login</h2>
-      <p class="absolute top-[30%] text-sm text-red-600 font-medium text-left">{{ errorMessage }}</p>
+      <p class="absolute top-[30%] text-sm text-red-600 font-medium text-left">
+        {{ errorMessage }}
+      </p>
       <input
         class="focus:outline-none p-3 border-[1px] border-accent-color2 block my-4 rounded-md w-full"
         type="email"

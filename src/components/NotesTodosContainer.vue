@@ -130,7 +130,7 @@ const onDeleteTodoHandler = (todoId: string, todoTitle: string) => {
     await deleteTodoById(todoId)
       .then(() => {
         router.replace({ path: "/" });
-        showSuccessToast("Note deleted");
+        showSuccessToast("Todo deleted");
       })
       .catch((error) => showErrorToast(error.message));
 
@@ -183,7 +183,7 @@ const onDeleteTodoHandler = (todoId: string, todoTitle: string) => {
 
     <article
       v-else-if="filteredNotes.length || filteredTodos.length"
-      class="gap-2 columns-1 space-y-2 md:columns-3 lg:columns-4"
+      class="gap-1 columns-2 space-y-1 sm:gap-2 sm:space-y-2 md:columns-3 lg:columns-4"
     >
       <div v-for="(note, index) in filteredNotes" :key="index">
         <NoteItem

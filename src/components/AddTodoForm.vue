@@ -118,7 +118,7 @@ onMounted(async () => {
 <template>
   <section class="flex justify-center items-center my-5">
     <article
-      class="bg-white min-w-[576px] max-w-[576px] h-full rounded-lg shadow-lg font-open-sans pb-2"
+      class="bg-white h-full rounded-lg shadow-lg font-open-sans pb-2 min-w-[90%] sm:min-w-[70%] lg:min-w-[50%]"
     >
       <input
         class="block w-full text-lg p-2 focus:outline-none my-2 text-slate-600 placeholder:text-slate-600"
@@ -133,7 +133,7 @@ onMounted(async () => {
         <input
           type="checkbox"
           v-model="todoItem.is_complete"
-          class="block w-4 h-4 p-1 ml-3"
+          class="block sm:w-4 sm:h-4 p-1 ml-3 accent-accent-color2"
         />
         <input
           type="text"
@@ -142,14 +142,14 @@ onMounted(async () => {
           @keydown.enter="handleEnter(index)"
           @keyup.delete="handleDelete(index)"
           ref="inputRefs"
-          class="block focus:outline-none w-full p-1 mr-3"
+          class="block focus:outline-none w-full p-1 mr-3 max-sm:text-sm"
         />
       </div>
       <button
         @click="onSubmitHandler"
         class="px-2 py-1 font-semibold float-right m-2"
       >
-        Close
+        Save
       </button>
     </article>
   </section>

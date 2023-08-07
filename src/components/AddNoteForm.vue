@@ -69,7 +69,7 @@ onMounted(async () => {
 <template>
   <section class="flex justify-center items-center my-5">
     <form
-      class="bg-white p-5 min-w-[576px] max-w-[576px] h-full rounded-lg shadow-lg font-open-sans"
+      class="bg-white p-5 h-full rounded-lg shadow-lg font-open-sans min-w-[90%] sm:min-w-[70%] lg:min-w-[50%]"
       @submit.prevent="onSubmitHandler"
     >
       <input
@@ -79,7 +79,7 @@ onMounted(async () => {
       />
       <textarea
         v-model="noteData.text"
-        class="block w-full focus:outline-none p-1 my-2 text-slate-900 placeholder:text-slate-600"
+        class="block w-full focus:outline-none p-1 my-2 text-slate-900 placeholder:text-slate-600 resize-none max-sm:text-sm"
         placeholder="Write your note here"
         spellcheck="false"
         ref="textAreaRef"

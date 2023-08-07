@@ -43,6 +43,13 @@ const currentTodoData = ref<GetTodo>({
   ],
 });
 
+// const newTodoItemTemplate: AddTodoItem = {
+//   id: `todo_item-${nanoid(16)}`,
+//   text: "",
+//   is_complete: false,
+//   todo_id: currentTodoData.value.id,
+// };
+
 const fetchTodoData = async () => {
   await getTodoById(todoId.value).then((data) => {
     todo.value = data;
@@ -50,6 +57,23 @@ const fetchTodoData = async () => {
 
   if (todo.value) {
     currentTodoData.value = JSON.parse(JSON.stringify(todo.value));
+    const activeTodoInCurrentTodoData = currentTodoData.value.todo_items.filter(
+      (todo) => {
+        return !todo.is_complete;
+      }
+    );
+
+    if (!activeTodoInCurrentTodoData.length) {
+      currentTodoData.value.todo_items.push({
+        id: `todo_item-${nanoid(16)}`,
+        text: "",
+        is_complete: false,
+        todo_id: currentTodoData.value.id,
+      });
+      currentActiveTodoItems.value = [
+        ...currentTodoData.value.todo_items,
+      ].filter((todo) => !todo.is_complete);
+    }
   }
 
   nextTick(() => {
@@ -59,18 +83,18 @@ const fetchTodoData = async () => {
 
 const currentActiveTodoItems = ref<GetTodoItem[]>([]);
 const currentIndex = ref<number>(currentActiveTodoItems.value.length - 1);
-const inputRefs = ref<HTMLInputElement[]>([]);
+// const textAreaRefs = ref<HTMLTextAreaElement[]>([]);
+const inputRefs = ref<HTMLInputElement[]>([])
 const isTodoDataChanged = ref<boolean>(false);
 
 const addTodoItemInputElement = () => {
   currentIndex.value += 1;
-  const newTodoItem = {
+  currentTodoData.value.todo_items.push({
     id: `todo_item-${nanoid(16)}`,
     text: "",
     is_complete: false,
     todo_id: currentTodoData.value.id,
-  };
-  currentTodoData.value.todo_items.push(newTodoItem);
+  });
   currentActiveTodoItems.value = [...currentTodoData.value.todo_items].filter(
     (todo) => !todo.is_complete
   );
@@ -116,10 +140,7 @@ const handleBackspaceButton = (todoItem: GetTodoItem) => {
       if (prevInput) {
         prevInput.focus();
       } else if (!prevInput) {
-        console.log("yntkts");
         inputRefs.value[inputRefs.value.length - 1].focus();
-      } else {
-        console.log("lah");
       }
     });
 
@@ -196,9 +217,7 @@ const closeButtonHandler = async () => {
         await addTodoItem(newTodoItems);
       }
 
-      if (
-        isTodoDataChanged.value
-      ) {
+      if (isTodoDataChanged.value) {
         emit("showSuccessToast", "Todo updated");
         emit("todoUpdate");
         setTimeout(closeTodoDetail, 1000);
@@ -226,10 +245,31 @@ const deleteTodoItem = async (todoItemId: string) => {
   }
 };
 
+// const resizeTextArea = (todoItem: GetTodoItem) => {
+//   const index = currentActiveTodoItems.value.findIndex(
+//     (item) => item.id === todoItem.id
+//   );
+//   const textarea = inputRefs.value[index];
+
+//   if (textarea) {
+//     textarea.style.height = "auto"; // Reset the height to auto to calculate the new height.
+//     textarea.style.height = `${textarea.scrollHeight}px`; // Set the height to the scrollHeight.
+//   }
+// };
+
 watch(
   currentTodoData,
   (newValue) => {
-    isTodoDataChanged.value = JSON.stringify(newValue) !== JSON.stringify(todo.value);
+    isTodoDataChanged.value =
+      JSON.stringify(newValue) !== JSON.stringify(todo.value);
+  },
+  { deep: true, immediate: true }
+);
+
+watch(
+  currentTodoData,
+  (newValue) => {
+    currentTodoData.value = newValue;
   },
   { deep: true, immediate: true }
 );
@@ -282,13 +322,19 @@ onMounted(async () => {
                 class="block h-5 w-5 accent-accent-color2"
               />
               <input
-                class="block p-1 w-[90%] focus:outline-none"
+                class="block p-1 w-[90%] focus:outline-none no-scrollbar resize-none"
                 :class="{ 'line-through': todoItem.is_complete }"
-                type="text"
+                spellcheck="false"
                 v-model="todoItem.text"
-                @input="handleInput(todoItem)"
+                @input="
+                  () => {
+                    handleInput(todoItem);
+                  
+                  }
+                "
                 @keydown.enter="handleEnterButton(todoItem)"
                 @keyup.delete="handleBackspaceButton(todoItem)"
+                
                 ref="inputRefs"
               />
               <button
@@ -320,9 +366,11 @@ onMounted(async () => {
                 class="block h-5 w-5 accent-accent-color2"
               />
               <input
-                class="block p-1 w-[90%] focus:outline-none"
+                class="block p-1 w-[90%] focus:outline-none resize-none no-scrollbar text-gray-500"
                 :class="{ 'line-through': todoItem.is_complete }"
                 v-model="todoItem.text"
+                spellcheck="false"
+                
               />
               <button
                 class="hidden font-semibold p-1 group-hover:block float-right"
@@ -357,49 +405,25 @@ onMounted(async () => {
   animation: fadedown 250ms;
 }
 
-@keyframes fadedown {
-  from {
-    opacity: 1;
-    top: 30%;
-  }
-  to {
-    opacity: 0;
-    top: 35%;
-  }
-}
-
 @keyframes fadeup {
   from {
     opacity: 0;
-    top: 35%;
+    top: -5%;
   }
   to {
     opacity: 1;
-    top: 30%;
+    top: 0%;
   }
 }
 
-@media screen and (min-width: 768px) {
-  @keyframes fadeup {
-    from {
-      opacity: 0;
-      top: -5%;
-    }
-    to {
-      opacity: 1;
-      top: 0%;
-    }
+@keyframes fadedown {
+  from {
+    opacity: 1;
+    top: 0%;
   }
-
-  @keyframes fadedown {
-    from {
-      opacity: 1;
-      top: 0%;
-    }
-    to {
-      opacity: 0;
-      top: -5%;
-    }
+  to {
+    opacity: 0;
+    top: -5%;
   }
 }
 </style>

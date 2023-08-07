@@ -24,7 +24,7 @@ onBeforeMount(async () => {
       :searchKeyword="searchKeyword"
       @updateSearchKeyword="(searchKey) => (searchKeyword = searchKey)"
     />
-    <section class="px-10">
+    <section class="px-2 sm:px-10">
       <Suspense>
         <NotesTodosContainer :searchKeyword="searchKeyword" />
       </Suspense>

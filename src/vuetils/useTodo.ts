@@ -17,25 +17,6 @@ const addTodo = async (todo: AddTodo) => {
     }
 }
 
-// const getTodos = async (): Promise<GetTodo[]> => {
-//     try {
-//         const { data: todos, error } = await supabase.from('todos').select('id, title, updated_at')
-
-//         if (error) {
-//             console.error(error.message)
-//             throw new Error(error.message)
-//         }
-//         if (todos && todos.length) {
-//             return todos
-//         } else {
-//             return []
-//         }
-//     } catch (error: any) {
-//         console.log(error)
-//         throw new Error(error)
-//     }
-// }
-
 const getTodos = async (author: string | null): Promise<GetTodo[]> => {
     try {
         const { data: todos, error } = await supabase.from('todos').select('id, title, updated_at').eq('author', author);
