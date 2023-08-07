@@ -22,7 +22,7 @@ const noteId = ref<string>(route.params.id as string);
 
 const closeNoteDetail = () => {
   emit("closeNoteDetail");
-  router.push("/");
+  router.replace({path: '/'});
 };
 
 const textAreaRef = ref<HTMLTextAreaElement | null>(null);
@@ -115,11 +115,11 @@ const resizeTextArea = () => {
         :class="{ open: showModal, close: !showModal }"
       >
         <div
-          class="relative p-2 rounded-lg max-h-[500px] overflow-y-scroll bg-white sm:p-3"
+          class="relative p-2 rounded-lg max-h-[70vh] overflow-y-scroll bg-white sm:p-3"
         >
           <input
             class="font-semibold block focus:outline-none w-full text-xl sm:text-2xl"
-            :placeholder="note.title ? '' : 'Title'"
+            placeholder="Title"
             v-model="currentNoteData.title"
           />
           <textarea

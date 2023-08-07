@@ -9,6 +9,7 @@ import {
   updateTodoItemById,
   deleteTodoItemById,
 } from "../vuetils/useTodoItem";
+import { formatTimestampWithTimeZone } from "../helper/formateDate";
 
 const route = useRoute();
 const router = useRouter();
@@ -24,7 +25,8 @@ const emit = defineEmits([
 
 const closeTodoDetail = () => {
   emit("closeTodoDetail");
-  router.push("/");
+  router.replace({path: '/'});
+  
 };
 
 const todoId = ref<string>(route.params.id as string);
@@ -84,7 +86,7 @@ const fetchTodoData = async () => {
 const currentActiveTodoItems = ref<GetTodoItem[]>([]);
 const currentIndex = ref<number>(currentActiveTodoItems.value.length - 1);
 // const textAreaRefs = ref<HTMLTextAreaElement[]>([]);
-const inputRefs = ref<HTMLInputElement[]>([])
+const inputRefs = ref<HTMLInputElement[]>([]);
 const isTodoDataChanged = ref<boolean>(false);
 
 const addTodoItemInputElement = () => {
@@ -217,6 +219,7 @@ const closeButtonHandler = async () => {
         await addTodoItem(newTodoItems);
       }
 
+
       if (isTodoDataChanged.value) {
         emit("showSuccessToast", "Todo updated");
         emit("todoUpdate");
@@ -296,15 +299,15 @@ onMounted(async () => {
       class="fixed top-0 left-0 right-0 z-[100] w-full overflow-hidden h-screen bg-black/80 flex items-center justify-center"
     >
       <div
-        class="relative p-4 mx-auto"
+        class="relative p-4 mx-auto min-w-[90%] sm:min-w-[50%]"
         :class="{ open: showModal, close: !showModal }"
       >
         <div
-          class="p-3 min-w-[500px] max-h-[500px] overflow-y-scroll relative bg-white rounded-md"
+          class="p-3 overflow-y-scroll relative bg-white rounded-md max-h-[70vh]"
         >
           <input
-            class="text-2xl font-semibold block focus:outline-none w-full"
-            :placeholder="todo.title ? '' : 'Title'"
+            class="font-semibold block focus:outline-none w-full text-xl sm:text-2xl"
+            placeholder="Title"
             v-model="currentTodoData.title"
           />
 
@@ -319,26 +322,26 @@ onMounted(async () => {
               <input
                 type="checkbox"
                 v-model="todoItem.is_complete"
-                class="block h-5 w-5 accent-accent-color2"
+                class="block sm:h-4 sm:w-4 accent-accent-color2"
               />
+
               <input
-                class="block p-1 w-[90%] focus:outline-none no-scrollbar resize-none"
+                class="block p-1 w-[90%] focus:outline-none no-scrollbar resize-none max-sm:text-sm"
                 :class="{ 'line-through': todoItem.is_complete }"
                 spellcheck="false"
                 v-model="todoItem.text"
                 @input="
                   () => {
                     handleInput(todoItem);
-                  
                   }
                 "
                 @keydown.enter="handleEnterButton(todoItem)"
                 @keyup.delete="handleBackspaceButton(todoItem)"
-                
                 ref="inputRefs"
               />
+
               <button
-                class="hidden font-semibold p-1 group-hover:block float"
+                class="hidden font-semibold p-1 group-hover:block float-right"
                 @click="
                   () => {
                     deleteTodoItem(todoItem.id);
@@ -363,14 +366,13 @@ onMounted(async () => {
               <input
                 type="checkbox"
                 v-model="todoItem.is_complete"
-                class="block h-5 w-5 accent-accent-color2"
+                class="block sm:h-4 sm:w-5 accent-accent-color2"
               />
               <input
-                class="block p-1 w-[90%] focus:outline-none resize-none no-scrollbar text-gray-500"
+                class="block p-1 w-[90%] focus:outline-none resize-none no-scrollbar text-gray-500 max-sm:text-sm"
                 :class="{ 'line-through': todoItem.is_complete }"
                 v-model="todoItem.text"
                 spellcheck="false"
-                
               />
               <button
                 class="hidden font-semibold p-1 group-hover:block float-right"
@@ -384,12 +386,18 @@ onMounted(async () => {
               </button>
             </div>
           </div>
-          <button
-            class="px-2 py-1 bg-slate-100 rounded-lg"
-            @click="closeButtonHandler"
-          >
-            {{ isTodoDataChanged ? "Update" : "Close" }}
-          </button>
+          <div class="flex items-center justify-between">
+            <button
+              class="px-2 py-1 bg-slate-100 rounded-lg"
+              @click="closeButtonHandler"
+            >
+              {{ isTodoDataChanged ? "Update" : "Close" }}
+            </button>
+            <p class="float-right font-medium text-xs sm:text-sm">
+              Updated at:
+              {{ formatTimestampWithTimeZone(todo.updated_at, "Asia/Jakarta") }}
+            </p>
+          </div>
         </div>
         <div v-if="!todo">Loading...</div>
       </div>
