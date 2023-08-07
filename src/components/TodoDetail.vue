@@ -43,13 +43,9 @@ const currentTodoData = ref<GetTodo>({
     },
   ],
 });
-
-// const newTodoItemTemplate: AddTodoItem = {
-//   id: `todo_item-${nanoid(16)}`,
-//   text: "",
-//   is_complete: false,
-//   todo_id: currentTodoData.value.id,
-// };
+const currentActiveTodoItems = ref<GetTodoItem[]>([]);
+const currentIndex = ref<number>(currentActiveTodoItems.value.length - 1);
+const inputRefs = ref<HTMLInputElement[]>([]);
 
 const fetchTodoData = async () => {
   await getTodoById(todoId.value).then((data) => {
@@ -86,12 +82,6 @@ const fetchTodoData = async () => {
   }
 };
 
-const currentActiveTodoItems = ref<GetTodoItem[]>([]);
-const currentIndex = ref<number>(currentActiveTodoItems.value.length - 1);
-// const textAreaRefs = ref<HTMLTextAreaElement[]>([]);
-const inputRefs = ref<HTMLInputElement[]>([]);
-const isTodoDataChanged = ref<boolean>(false);
-
 const addTodoItemInputElement = () => {
   currentIndex.value += 1;
   currentTodoData.value.todo_items.push({
@@ -100,6 +90,7 @@ const addTodoItemInputElement = () => {
     is_complete: false,
     todo_id: currentTodoData.value.id,
   });
+
   currentActiveTodoItems.value = [...currentTodoData.value.todo_items].filter(
     (todo) => !todo.is_complete
   );
@@ -107,6 +98,9 @@ const addTodoItemInputElement = () => {
 
 const handleInput = (todoItem: GetTodoItem) => {
   currentIndex.value = inputRefs.value.length - 1;
+  console.log(inputRefs.value);
+  console.log(currentActiveTodoItems.value);
+  console.log(currentTodoData.value);
 
   const index = currentActiveTodoItems.value.findIndex(
     (item) => item.id === todoItem.id
@@ -120,8 +114,8 @@ const handleEnterButton = (todoItem: GetTodoItem) => {
   const index = currentActiveTodoItems.value.findIndex(
     (item) => item.id === todoItem.id
   );
+
   currentIndex.value = inputRefs.value.length - 1;
-  // currentIndex.value = currentActiveTodoItems.value.length-1
 
   if (index === currentIndex.value - 1) {
     inputRefs.value[currentIndex.value]?.focus();
@@ -141,7 +135,7 @@ const handleBackspaceButton = (todoItem: GetTodoItem) => {
   if (todoItem.text === "" && currentTodoData.value.todo_items.length > 1) {
     nextTick(() => {
       const prevInput =
-        inputRefs.value[currentActiveTodoItems.value.length - 1];
+        inputRefs.value[currentActiveTodoItems.value.length - 2];
       if (prevInput) {
         prevInput.focus();
       } else if (!prevInput) {
@@ -158,17 +152,6 @@ const handleBackspaceButton = (todoItem: GetTodoItem) => {
     currentIndex.value = Math.max(0, currentIndex.value - 1);
   }
 };
-
-watch(
-  currentTodoData,
-  (newValue) => {
-    currentActiveTodoItems.value = newValue.todo_items.filter((todo) => {
-      return !todo.is_complete;
-    });
-    currentIndex.value = currentActiveTodoItems.value.length - 1;
-  },
-  { immediate: true, deep: true }
-);
 
 const filteredTodoItems = computed(() => {
   return currentTodoData.value.todo_items.filter((todo) => {
@@ -222,7 +205,11 @@ const closeButtonHandler = async () => {
         await addTodoItem(newTodoItems);
       }
 
-      if (isTodoDataChanged.value) {
+      if (
+        newTodoItems.length ||
+        updatedTodoItems.length ||
+        newTodoItems.length
+      ) {
         emit("showSuccessToast", "Todo updated");
         emit("todoUpdate");
         setTimeout(closeTodoDetail, 1000);
@@ -250,33 +237,39 @@ const deleteTodoItem = async (todoItemId: string) => {
   }
 };
 
-// const resizeTextArea = (todoItem: GetTodoItem) => {
-//   const index = currentActiveTodoItems.value.findIndex(
-//     (item) => item.id === todoItem.id
-//   );
-//   const textarea = inputRefs.value[index];
-
-//   if (textarea) {
-//     textarea.style.height = "auto"; // Reset the height to auto to calculate the new height.
-//     textarea.style.height = `${textarea.scrollHeight}px`; // Set the height to the scrollHeight.
-//   }
-// };
 
 watch(
   currentTodoData,
   (newValue) => {
-    isTodoDataChanged.value =
-      JSON.stringify(newValue) !== JSON.stringify(todo.value);
+    nextTick(() => {
+      currentActiveTodoItems.value = newValue.todo_items.filter((todo) => {
+        return !todo.is_complete;
+      });
+
+      currentIndex.value = currentActiveTodoItems.value.length - 1;
+    });
   },
-  { deep: true, immediate: true }
+  { immediate: true, deep: true }
 );
 
+
 watch(
   currentTodoData,
-  (newValue) => {
-    currentTodoData.value = newValue;
+  () => {
+    nextTick(() => {
+      inputRefs.value.forEach(item => console.log(item.name))
+      inputRefs.value.sort((a, b) => {
+        const indexA = currentActiveTodoItems.value.findIndex(
+          (todo) => todo.id === a.name
+        );
+        const indexB = currentActiveTodoItems.value.findIndex(
+          (todo) => todo.id === b.name
+        );
+        return indexA - indexB;
+      });
+    });
   },
-  { deep: true, immediate: true }
+  { immediate: true, deep: true }
 );
 
 onMounted(async () => {
@@ -313,87 +306,86 @@ onMounted(async () => {
             v-model="currentTodoData.title"
           />
 
-          <div
-            v-for="(todoItem, index) in currentTodoData.todo_items"
-            :key="index"
-          >
+          <article class="min-h-[20vh]">
             <div
-              v-if="!todoItem.is_complete"
-              class="py-1 my-2 flex items-center gap-2 group rounded-sm border-y-[1px] border-y-transparent box-border focus-within:border-y-[1px] focus-within:border-slate-500"
+              v-for="(todoItem, index) in currentTodoData.todo_items"
+              :key="index"
             >
-              <input
-                type="checkbox"
-                v-model="todoItem.is_complete"
-                class="block sm:h-4 sm:w-4 accent-accent-color2"
-              />
-
-              <input
-                class="block p-1 w-[90%] focus:outline-none no-scrollbar resize-none max-sm:text-sm"
-                :class="{ 'line-through': todoItem.is_complete }"
-                spellcheck="false"
-                v-model="todoItem.text"
-                @input="
-                  () => {
-                    handleInput(todoItem);
-                  }
-                "
-                @keydown.enter="handleEnterButton(todoItem)"
-                @keyup.delete="handleBackspaceButton(todoItem)"
-                ref="inputRefs"
-              />
-
-              <button
-                class="hidden font-semibold p-1 group-hover:block float-right"
-                @click="
-                  () => {
-                    deleteTodoItem(todoItem.id);
-                  }
-                "
+              <div
+                v-if="!todoItem.is_complete"
+                class="py-1 my-2 flex items-center gap-2 group rounded-sm border-y-[1px] border-y-transparent box-border focus-within:border-y-[1px] focus-within:border-slate-500"
               >
-                x
-              </button>
+                <input
+                  type="checkbox"
+                  v-model="todoItem.is_complete"
+                  class="block sm:h-4 sm:w-4 accent-accent-color2"
+                />
+
+                <input
+                  class="block p-1 w-[90%] focus:outline-none no-scrollbar resize-none max-sm:text-sm"
+                  :class="{ 'line-through': todoItem.is_complete }"
+                  spellcheck="false"
+                  v-model="todoItem.text"
+                  @input="handleInput(todoItem)"
+                  @keydown.enter="handleEnterButton(todoItem)"
+                  @keyup.delete="handleBackspaceButton(todoItem)"
+                  ref="inputRefs"
+                  :name="todoItem.id"
+                />
+
+                <button
+                  class="hidden font-semibold p-1 group-hover:block float-right"
+                  @click="
+                    () => {
+                      deleteTodoItem(todoItem.id);
+                    }
+                  "
+                >
+                  x
+                </button>
+              </div>
             </div>
-          </div>
 
-          <hr />
+            <hr />
 
-          <div
-            v-for="(todoItem, index) in currentTodoData.todo_items"
-            :key="index"
-          >
             <div
-              v-if="todoItem.is_complete"
-              class="py-1 my-2 flex items-center gap-2 group rounded-sm border-y-[1px] border-y-transparent box-border focus-within:border-y-[1px] focus-within:border-slate-500"
+              v-for="(todoItem, index) in currentTodoData.todo_items"
+              :key="index"
             >
-              <input
-                type="checkbox"
-                v-model="todoItem.is_complete"
-                class="block sm:h-4 sm:w-5 accent-accent-color2"
-              />
-              <input
-                class="block p-1 w-[90%] focus:outline-none resize-none no-scrollbar text-gray-500 max-sm:text-sm"
-                :class="{ 'line-through': todoItem.is_complete }"
-                v-model="todoItem.text"
-                spellcheck="false"
-              />
-              <button
-                class="hidden font-semibold p-1 group-hover:block float-right"
-                @click="
-                  () => {
-                    deleteTodoItem(todoItem.id);
-                  }
-                "
+              <div
+                v-if="todoItem.is_complete"
+                class="py-1 my-2 flex items-center gap-2 group rounded-sm border-y-[1px] border-y-transparent box-border focus-within:border-y-[1px] focus-within:border-slate-500"
               >
-                x
-              </button>
+                <input
+                  type="checkbox"
+                  v-model="todoItem.is_complete"
+                  class="block sm:h-4 sm:w-5 accent-accent-color2"
+                />
+                <input
+                  class="block p-1 w-[90%] focus:outline-none resize-none no-scrollbar text-gray-500 max-sm:text-sm"
+                  :class="{ 'line-through': todoItem.is_complete }"
+                  v-model="todoItem.text"
+                  spellcheck="false"
+                />
+                <button
+                  class="hidden font-semibold p-1 group-hover:block float-right"
+                  @click="
+                    () => {
+                      deleteTodoItem(todoItem.id);
+                    }
+                  "
+                >
+                  x
+                </button>
+              </div>
             </div>
-          </div>
+          </article>
           <div class="flex items-center justify-between">
             <button
               class="px-2 py-1 bg-slate-100 rounded-lg"
               @click="closeButtonHandler"
             >
-              {{ isTodoDataChanged ? "Update" : "Close" }}
+              Update
             </button>
             <p class="float-right font-medium text-xs sm:text-sm">
               Updated at:

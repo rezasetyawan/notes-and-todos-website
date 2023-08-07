@@ -7,7 +7,6 @@ const showSuccessToast = (message: string="success") => {
         position: toast.POSITION.TOP_CENTER,
         theme: 'light',
         hideProgressBar: true,
-        onOpen: () => console.log('durjanaaaaaa')
     })
 }
 
