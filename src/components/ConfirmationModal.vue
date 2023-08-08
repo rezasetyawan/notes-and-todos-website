@@ -93,29 +93,25 @@ const closeModal = () => {
   animation: fadedown 250ms;
 }
 
-
-
-
-  @keyframes fadeup {
-    from {
-      opacity: 0;
-      top: -5%;
-    }
-    to {
-      opacity: 1;
-      top: 0%;
-    }
+@keyframes fadeup {
+  from {
+    opacity: 0;
+    top: -5%;
   }
-
-  @keyframes fadedown {
-    from {
-      opacity: 1;
-      top: 0%;
-    }
-    to {
-      opacity: 0;
-      top: -5%;
-    }
+  to {
+    opacity: 1;
+    top: 0%;
   }
+}
 
+@keyframes fadedown {
+  from {
+    opacity: 1;
+    top: 0%;
+  }
+  to {
+    opacity: 0;
+    top: -5%;
+  }
+}
 </style>

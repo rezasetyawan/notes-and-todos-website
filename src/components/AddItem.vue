@@ -1,11 +1,15 @@
 <script setup lang="ts">
-const { showNoteForm, noteData , showTodoForm} = defineProps([
+const { showNoteForm, noteData, showTodoForm } = defineProps([
   "showNoteForm",
   "noteData",
   "isFirstTimeInput",
-  "showTodoForm"
+  "showTodoForm",
 ]);
-const emit = defineEmits(["updateShowNoteForm", "firstInput", "updateShowTodoForm"]);
+const emit = defineEmits([
+  "updateShowNoteForm",
+  "firstInput",
+  "updateShowTodoForm",
+]);
 
 const triggerNoteForm = () => {
   if (!showNoteForm.value) {
@@ -15,13 +19,15 @@ const triggerNoteForm = () => {
 
 const triggerTodoForm = () => {
   if (!showTodoForm.value) {
-    emit("updateShowTodoForm", true)
+    emit("updateShowTodoForm", true);
   }
-}
+};
 </script>
 <template>
   <section class="flex justify-center items-center my-5">
-    <div class="p-2 shadow-xl rounded-lg flex justify-between min-w-[90%] sm:min-w-[70%] lg:min-w-[50%]">
+    <div
+      class="p-2 shadow-xl rounded-lg flex justify-between min-w-[90%] sm:min-w-[70%] lg:min-w-[50%]"
+    >
       <input
         placeholder="Add note..."
         v-model="noteData.text"

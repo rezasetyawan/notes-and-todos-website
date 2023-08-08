@@ -98,9 +98,6 @@ const addTodoItemInputElement = () => {
 
 const handleInput = (todoItem: GetTodoItem) => {
   currentIndex.value = inputRefs.value.length - 1;
-  console.log(inputRefs.value);
-  console.log(currentActiveTodoItems.value);
-  console.log(currentTodoData.value);
 
   const index = currentActiveTodoItems.value.findIndex(
     (item) => item.id === todoItem.id
@@ -232,11 +229,13 @@ const deleteTodoItem = async (todoItemId: string) => {
     );
     currentTodoData.value.todo_items.splice(index, 1);
     await deleteTodoItemById(todoItemId);
-  } catch (error) {
-    console.error(error);
+  } catch (error: any) {
+    emit(
+      "showErrorToast",
+      `Failed to update todo ${error.message ? error.message : error}`
+    );
   }
 };
-
 
 watch(
   currentTodoData,
@@ -245,19 +244,16 @@ watch(
       currentActiveTodoItems.value = newValue.todo_items.filter((todo) => {
         return !todo.is_complete;
       });
-
       currentIndex.value = currentActiveTodoItems.value.length - 1;
     });
   },
   { immediate: true, deep: true }
 );
 
-
 watch(
   currentTodoData,
   () => {
     nextTick(() => {
-      inputRefs.value.forEach(item => console.log(item.name))
       inputRefs.value.sort((a, b) => {
         const indexA = currentActiveTodoItems.value.findIndex(
           (todo) => todo.id === a.name

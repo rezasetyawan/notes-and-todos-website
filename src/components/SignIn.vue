@@ -15,7 +15,6 @@ const userSession = ref();
 
 onBeforeMount(async () => {
   userSession.value = await getUserSession();
-  console.log(userSession.value);
   if (userSession.value) {
     router.push("/");
   }
@@ -33,8 +32,9 @@ const onSubmitHandler = async () => {
         isOnProgess.value = false;
         errorMessage.value = error.message;
       });
-  } catch (error) {
-    console.error(error);
+  } catch (error: any) {
+    isOnProgess.value = false;
+    errorMessage.value = error.message;
   }
 };
 </script>

@@ -58,8 +58,10 @@ onMounted(async () => {
       const fetchedTodos = await getTodos(userSession.value.user.id);
       todos.value = fetchedTodos || [];
     }
-  } catch (error) {
-    console.error(error);
+  } catch (error: any) {
+    showErrorToast(
+      `Failed to update todo ${error.message ? error.message : error}`
+    );
   } finally {
     loading.value = false;
   }
@@ -152,8 +154,6 @@ const onDeleteTodoHandler = (todoId: string, todoTitle: string) => {
       @addTodo="
         async () => {
           notes = await getNotes(userSession.user.id);
-          console.log('update note');
-          console.log(notes);
         }
       "
     />
@@ -216,8 +216,6 @@ const onDeleteTodoHandler = (todoId: string, todoTitle: string) => {
       @noteUpdate="
         async () => {
           notes = await getNotes(userSession.user.id);
-          console.log('update note');
-          console.log(notes);
         }
       "
     />

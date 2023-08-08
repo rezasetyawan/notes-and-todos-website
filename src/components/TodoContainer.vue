@@ -22,9 +22,7 @@ const onChangeTodoStatusHandler = async (
   await updateTodoItemById(todoItemId, {
     is_complete: !todoItemStatus,
   })
-    .then(() => {
-      console.log("todo item status updated");
-    })
+    .then()
     .catch((error) => {
       console.error("failed to updated todo item status: " + error);
     });

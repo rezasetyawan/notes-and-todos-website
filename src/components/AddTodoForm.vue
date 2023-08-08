@@ -98,7 +98,6 @@ const onSubmitHandler = async () => {
       emit("addTodo")
     } catch (error: any) {
       showErrorToast(`Failed to add todo ${error.message}`);
-      console.log(error);
     }
   }
   toggleTodoForm();

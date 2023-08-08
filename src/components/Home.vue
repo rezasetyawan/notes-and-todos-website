@@ -11,7 +11,6 @@ const searchKeyword = ref<string>("");
 
 onBeforeMount(async () => {
   userSession.value = await getUserSession();
-  console.log(userSession.value)
   if (!userSession.value) {
     router.push("/auth/signin");
   }

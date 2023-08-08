@@ -41,7 +41,9 @@ const redirectToDetail = (name: string, id: string) => {
         }
       "
     >
-      <h3 class="font-semibold max-w-[90%] sm:text-lg">{{ note.title || "-" }}</h3>
+      <h3 class="font-semibold max-w-[90%] sm:text-lg">
+        {{ note.title || "-" }}
+      </h3>
       <p class="line-clamp-6 text-sm max-sm:text-sm">{{ note.text }}</p>
     </article>
   </div>
