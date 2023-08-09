@@ -41,13 +41,15 @@ const onSubmitHandler = async () => {
       .then(() => {
         resetForm();
         showSuccessToast("Note added !");
+        toggleNoteForm();
         emit("addTodo");
       })
       .catch((error) => {
         showErrorToast(`Failed to add note ${error.message}`);
       });
+  } else {
+    showErrorToast("Please fill the note first", 1000);
   }
-  toggleNoteForm();
 };
 
 const resizeTextArea = () => {
